@@ -1,0 +1,1 @@
+docker exec -it pinot-controller /opt/pinot/bin/pinot-admin.sh AddTable -tableConfigFile /config/orders_table.json -schemaFile /config/orders_schema.json -exec
