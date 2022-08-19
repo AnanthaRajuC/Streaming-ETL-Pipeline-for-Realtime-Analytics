@@ -13,8 +13,10 @@ Check the **docker-compose.yml** file
 
 |                  Command                                                |       Description                                     |
 |-------------------------------------------------------------------------|-------------------------------------------------------| 
-|`docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'`|list all the running containers                        |
+|`docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'`| list all the running containers                       |
 |`docker rm -f $(docker ps -a -q)\n`                                      | remove containers                                     |       
+|`docker system df`			                                              | Show storage usage                                    |
+|`docker volume prune`	                                                  | remove all dangling volumes                           |
 
 ##### Basic Docker commands for reference
 

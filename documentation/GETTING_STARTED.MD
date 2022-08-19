@@ -14,6 +14,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 *	You need to have **MySQL** installed on your machine. Using the `MySQL Workbench` or on any other MySQL client/console, create a database/schema named `streaming_etl_db`. 
 
+*	**mysql.cnf** MySQL database configuration
+
+~~~txt
+[mysqld]
+server-id         = 223344
+log_bin           = mysql-bin
+expire_logs_days  = 1
+binlog_format     = row
+~~~
+
 ~~~sql
 -- create schema
 CREATE SCHEMA streaming_etl_db;
