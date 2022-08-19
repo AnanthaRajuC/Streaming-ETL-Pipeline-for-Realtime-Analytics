@@ -11,6 +11,11 @@ Check the **docker-compose.yml** file
 |`docker-compose --compatibility up`| Start the containers using compatibility mode to set Memory and CPU Limits. Using --compatibility mode will attempt to convert that API v3 way of setting resource limits back into v2 compatible properties.                  |
 |`docker-compose down`	            | Stop the containers, remove them from Docker and remove the connected networks from it.     |
 
+|                  Command          |      Description                    |
+|-----------------------------------|-------------------------------------| 
+|`docker stop kafka-ui`             | Stop kafka-ui	                      |
+|`docker rm kafka-ui`               | remove kafka-ui                     |
+
 |                  Command                                                |       Description                                     |
 |-------------------------------------------------------------------------|-------------------------------------------------------| 
 |`docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'`| list all the running containers                       |
@@ -74,10 +79,10 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.password": "Debezium@123#",
     "database.server.name": "mysql",
 	"database.server.id": "223344",
-    "database.include.list": "activemq",
+    "database.include.list": "streaming_etl_db",
 	"database.allowPublicKeyRetrieval": true,
 	"database.history.kafka.bootstrap.servers": "kafka:9092",
-	"database.history.kafka.topic": "mysql-activemq-person",
+	"database.history.kafka.topic": "mysql-streaming_etl_db-person",
 	"time.precision.mode": "connect",
     "include.schema.changes": false,
     "transforms": "unwrap,dropTopicPrefix",
