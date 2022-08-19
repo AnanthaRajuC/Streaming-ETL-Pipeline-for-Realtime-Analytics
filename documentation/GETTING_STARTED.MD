@@ -84,3 +84,12 @@ INSERT INTO `streaming_etl_db`.`geo`(`lat`,`lng`)VALUES('la14','lo14');
 INSERT INTO `streaming_etl_db`.`address`(`city`,`street`,`suite`,`zipcode`,`geo_id`)VALUES('c14','s14','su14','z14',1);
 INSERT INTO `streaming_etl_db`.`person`(`name`,`username`,`address_id`)VALUES('d14','dbz14','1');
 ~~~
+
+*	Select Statement
+
+~~~sql
+SELECT * 
+FROM streaming_etl_db.person p
+LEFT JOIN streaming_etl_db.address a on a.id = p.address_id
+LEFT JOIN streaming_etl_db.geo g on g.id = a.geo_id;
+~~~

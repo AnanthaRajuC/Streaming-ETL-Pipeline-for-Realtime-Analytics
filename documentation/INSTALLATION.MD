@@ -94,3 +94,33 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 
 [http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status](http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status)  
 
+##### MySQL
+
+~~~sql
+SHOW BINARY LOGS;
+
+PURGE BINARY LOGS TO 'mysql-bin.000005';
+
+SELECT 
+	character_set_name 
+FROM information_schema.`COLUMNS` 
+WHERE table_schema = "streaming_etl_db"
+AND table_name = "address"
+AND column_name = "uuid";
+
+SHOW FULL COLUMNS FROM streaming_etl_db.address; 
+
+SELECT 
+	SCHEMA_NAME 'streaming_etl_db', 
+	default_character_set_name 'charset', 
+	DEFAULT_COLLATION_NAME 'collation' 
+FROM information_schema.SCHEMATA;
+
+SELECT 
+	DEFAULT_COLLATION_NAME 
+FROM information_schema.SCHEMATA S 
+WHERE schema_name = 'streaming_etl_db' 
+AND DEFAULT_COLLATION_NAME != 'utf8_bin';
+~~~
+
+
