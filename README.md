@@ -6,6 +6,11 @@
 -->
 # Streaming ETL pipeline MySQL
 
+## Details
+
+- [Technology stack](documentation/TECHNOLOGY_STACK.MD)    
+- [Getting Started](documentation/GETTING_STARTED.MD)  
+
 ## Reporting Issues/Suggest Improvements
 
 This Project uses GitHub's integrated issue tracking system to record bugs and feature requests. If you want to raise an issue, please follow the recommendations below:
