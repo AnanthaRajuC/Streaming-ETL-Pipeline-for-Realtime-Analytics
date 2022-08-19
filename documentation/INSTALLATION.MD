@@ -17,6 +17,7 @@ Check the **docker-compose.yml** file
 |`docker rm -f $(docker ps -a -q)\n`                                      | remove containers                                     |       
 |`docker system df`			                                              | Show storage usage                                    |
 |`docker volume prune`	                                                  | remove all dangling volumes                           |
+|`docker network ls`                                                      | List networks                                         |
 
 ##### Basic Docker commands for reference
 
@@ -42,7 +43,7 @@ Checkout additional Docker and DockerHub commands here, [https://github.com/Anan
 #### Accessing Kafka Topics via Kakfka-UI
 
 ~~~shell
-docker run --name=kafka-ui --network=mysql_debezium_cdc_apache_pinot_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
+docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
 ~~~
 
 URL to access Kakfka-UI console: **http://localhost:8080**  
