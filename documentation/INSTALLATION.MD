@@ -11,6 +11,11 @@ Check the **docker-compose.yml** file
 |`docker-compose --compatibility up`| Start the containers using compatibility mode to set Memory and CPU Limits. Using --compatibility mode will attempt to convert that API v3 way of setting resource limits back into v2 compatible properties.                  |
 |`docker-compose down`	            | Stop the containers, remove them from Docker and remove the connected networks from it.     |
 
+|                  Command                                                |       Description                                     |
+|-------------------------------------------------------------------------|-------------------------------------------------------| 
+|`docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'`|list all the running containers                        |
+|`docker rm -f $(docker ps -a -q)\n`                                      | remove containers                                     |       
+
 ##### Basic Docker commands for reference
 
 Checkout additional Docker and DockerHub commands here, [https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md](https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md) 
