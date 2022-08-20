@@ -26,25 +26,22 @@ binlog_format     = row
 ## Setup
 
 1. Clone the repository
-+
-[source,bash]
-----
+
+~~~shell
 git clone https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.git
 cd Streaming_ETL_pipeline_MySQL
-----
+~~~
 
 2. Start up the environment
-+
-_The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!_
-+
-[source,bash]
-----
+
+The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!_
+
+~~~shell
 docker-compose up
-----
+~~~
 
 3. Launch the KSQL CLI in another terminal window.
-+
-[source,bash]
-----
+
+~~~shell
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
-----
+~~~

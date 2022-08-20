@@ -11,6 +11,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### MySQL
 
+* Declare schema, user and permissions.
+
 ~~~sql
 -- create schema
 CREATE SCHEMA streaming_etl_db;
@@ -28,7 +30,7 @@ GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *
 FLUSH PRIVILEGES;
 ~~~
 
-*	Tables
+*	Declare Tables
 
 ~~~sql
 CREATE TABLE `geo` (
