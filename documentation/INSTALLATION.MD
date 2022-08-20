@@ -53,15 +53,15 @@ docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 80
 
 URL to access Kakfka-UI console: **http://localhost:8080**  
 
-[![Kafka UI](documentation/images/04-kafka-topics-before-debezium.png)](documentation/images/04-kafka-topics-before-debezium.png)  
+[![Kafka UI](/images/04-kafka-topics-before-debezium.png)](/images/04-kafka-topics-before-debezium.png)  
 
 After Debezium registration.
 
-[![Kafka UI after Debezium Registration](documentation/05-kafka-topics-after-registration.png)](documentation/images/05-kafka-topics-after-registration.png)  
+[![Kafka UI after Debezium Registration](documentation/05-kafka-topics-after-registration.png)](/images/05-kafka-topics-after-registration.png)  
 
 Person Topic
 
-[![Person Topic](documentation/06-kafka-topic-message.png)](documentation/images/06-kafka-topic-message.png)  
+[![Person Topic](documentation/06-kafka-topic-message.png)](/images/06-kafka-topic-message.png)  
 
 #### Accessing ksqlDb via ksqldb-cli
 
@@ -69,7 +69,7 @@ Person Topic
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ~~~
 
-[![ksqldb-cli](documentation/images/07-ksql-db-initial.png)](documentation/images/07-ksql-db-initial.png)  
+[![ksqldb-cli](/images/07-ksql-db-initial.png)](/images/07-ksql-db-initial.png)  
 
 ##### Basic ksqlDb commands for reference
 
@@ -110,15 +110,15 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 }'
 ~~~
 
-[![debezium-registration](documentation/images/01-debezium-registration.png)](documentation/images/01-debezium-registration.png)  
+[![debezium-registration](/images/01-debezium-registration.png)](/images/01-debezium-registration.png)  
 
 [http://localhost:8083/connectors](http://localhost:8083/connectors)  
 
-[![connectors](documentation/images/02-debezium-connectors.png)](documentation/images/02-debezium-connectors.png)  
+[![connectors](/images/02-debezium-connectors.png)](/images/02-debezium-connectors.png)  
 
 [http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status](http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status)  
 
-[![connector-status](documentation/images/03-debezium-connector-status.png)](documentation/images/03-debezium-connector-status.png)  
+[![connector-status](/images/03-debezium-connector-status.png)](/images/03-debezium-connector-status.png)  
 
 ##### MySQL
 

@@ -103,3 +103,17 @@ FROM streaming_etl_db.person p
 LEFT JOIN streaming_etl_db.address a on a.id = p.address_id
 LEFT JOIN streaming_etl_db.geo g on g.id = a.geo_id;
 ~~~
+
+*	ksqlDB
+
+~~~sql
+CREATE TABLE PERSON (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
+
+CREATE TABLE ADDRESS (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+
+show tables;
+
+SELECT * FROM PERSON EMIT CHANGES LIMIT 1;
+SELECT * FROM ADDRESS EMIT CHANGES LIMIT 1;
+~~~
+
