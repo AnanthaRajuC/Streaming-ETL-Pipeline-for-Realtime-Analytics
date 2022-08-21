@@ -1,11 +1,10 @@
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Initial Data setup.
 
 <details open="open">
 	<ul>
 		<li><a href="#mysql">MySQL</a></li>
-		<li><a href="#ksqldb">ksqlDB</a></li>
 	</ul>
 </details>
 
