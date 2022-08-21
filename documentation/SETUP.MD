@@ -9,9 +9,15 @@ $ cd Streaming_ETL_pipeline_MySQL
 
 #### Running the application via docker compose
 
-2. Start up the environment
+2. Pull all required docker images
 
-The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!_
+~~~shell
+$ docker-compose pull
+~~~
+
+3. Start up the environment
+
+The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!
 
 ~~~shell
 $ docker-compose up
@@ -30,7 +36,7 @@ Creating ksqldb-cli         ... done
 
 #### Accessing Kafka Topics via Kakfka-UI
 
-3. Optionally, start [Kafka UI](https://github.com/provectus/kafka-ui), an open-source web UI for Apache Kafka Management
+4. Optionally, start [Kafka UI](https://github.com/provectus/kafka-ui), an open-source web UI for Apache Kafka Management
 
 ~~~shell
 $ docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
@@ -40,7 +46,7 @@ URL to access Kakfka-UI console: **http://localhost:8080**
 
 ![Kafka UI](images/04-kafka-topics-before-debezium.png) 
 
-4. Make sure everything is up and running
+5. Make sure everything is up and running
 
 ~~~shell
 $ docker ps
@@ -48,9 +54,12 @@ $ docker ps
 
 ![Docker Compose Up](images/09-docker-ps.png) 
 
-#### Accessing ksqlDb via ksqldb-cli
+IMPORTANT: If any components do not show "Up" under the `Status` column (e.g., they say "Exit") then you must rectify this before continuing.
+As a first solution, try re-issuing the `docker-compose up -d` command.
 
-4. Launch the KSQL CLI in another terminal window.
+#### Accessing ksqlDb via ksqldb-cli  
+
+6. Launch the KSQL CLI in another terminal window.
 
 ~~~shell
 $ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088

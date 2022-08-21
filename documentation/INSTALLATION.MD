@@ -9,9 +9,17 @@ These instructions will provide you with the installation information necessary 
 	</ul>
 </details>
 
+## Linux Commands (Optional)
+
+~~~shell
+$ docker system info | grep Memory
+~~~
+
 ## Softwares
 
 *	[Docker](https://docs.docker.com/)
+
+*	[Docker Compose](https://docs.docker.com/compose/)
 
 *	You need to have **MySQL** database installed on your machine.
 
