@@ -39,7 +39,7 @@ docker run --name=kafka-ui --network=mysql_debezium_cdc_apache_pinot_webproxy -p
 
 URL to access Kakfka-UI console: **http://localhost:8080**  
 
-![Kafka UI](/images/04-kafka-topics-before-debezium.png) 
+![Kafka UI](images/04-kafka-topics-before-debezium.png) 
 
 4. Make sure everything is up and running
 
@@ -47,7 +47,7 @@ URL to access Kakfka-UI console: **http://localhost:8080**
 docker ps
 ~~~
 
-![Docker Compose Up](/images/09-docker-ps.png) 
+![Docker Compose Up](images/09-docker-ps.png) 
 
 #### Accessing ksqlDb via ksqldb-cli
 
@@ -57,7 +57,7 @@ docker ps
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ~~~
 
-![ksqlDB CLI](/images/10-ksql-db-initial.png) 
+![ksqlDB CLI](images/10-ksql-db-initial.png) 
 
 ## Tear down the stack
 

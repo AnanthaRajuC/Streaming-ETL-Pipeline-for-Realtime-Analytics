@@ -12,6 +12,7 @@
 - [Installation](documentation/INSTALLATION.MD)  
 - [Setup](documentation/SETUP.MD) 
 - [Getting Started](documentation/GETTING_STARTED.MD)  
+- [Tutorial](documentation/TUTORIAL.MD) 
 - [Reference](documentation/REFERENCE.MD)  
 
 

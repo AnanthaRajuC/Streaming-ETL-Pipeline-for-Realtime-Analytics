@@ -39,27 +39,6 @@ Checkout additional Docker and DockerHub commands here, [https://github.com/Anan
 |`docker logs [container_id] --since YYYY-MM-DD`                     | list container logs since a particular date                                   |
 |`docker logs [container_id] --since YYYY-MM-DDTHH:MM:SS.000000000Z` | list container logs since a particular timestamp                              |
 
-#### Debezium Registration
-
-~~~curl
-docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
-~~~
-
-After Debezium registration.
-
-![Kafka UI after Debezium Registration](/images/05-kafka-topics-after-registration.png)   
-
-Person Topic
-
-![Person Topic](/images/06-kafka-topic-message.png)  
-
-#### Accessing ksqlDb via ksqldb-cli
-
-~~~shell
-docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
-~~~
-
-[![ksqldb-cli](/images/07-ksql-db-initial.png)](/images/07-ksql-db-initial.png)  
 
 ##### Basic ksqlDb commands for reference
 
@@ -100,15 +79,15 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 }'
 ~~~
 
-![debezium-registration](/images/01-debezium-registration.png)
+![debezium-registration](images/01-debezium-registration.png)
 
 [http://localhost:8083/connectors](http://localhost:8083/connectors)  
 
-![connectors](/images/02-debezium-connectors.png)
+![connectors](images/02-debezium-connectors.png)
 
 [http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status](http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status)  
 
-![connector-status](/images/03-debezium-connector-status.png)
+![connector-status](images/03-debezium-connector-status.png)
 
 ##### MySQL
 

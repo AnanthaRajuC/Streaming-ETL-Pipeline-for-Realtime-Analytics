@@ -4,12 +4,14 @@ These instructions will provide you with the installation information necessary 
 
 <details open="open">
 	<ul>
-		<li><a href="#setup">Setup</a></li>
+		<li><a href="#softwares">Softwares</a></li>
 	</ul>
 </details>
 
-## Prerequisites
+## Softwares
 
 *	[Docker](https://docs.docker.com/)
 
-*	You need to have **MySQL** installed on your machine. Using the `MySQL Workbench` or on any other MySQL client/console, create a database/schema named `streaming_etl_db`.  
+*	You need to have **MySQL** database installed on your machine.
+
+*   `MySQL Workbench` or on any other MySQL database client/console.  
