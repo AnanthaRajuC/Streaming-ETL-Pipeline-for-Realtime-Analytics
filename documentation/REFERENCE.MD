@@ -1,8 +1,6 @@
 ## Reference
 
-#### Running the application via docker compose
-
-Check the **docker-compose.yml** file 
+Checkout additional Docker and DockerHub commands here, [https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md](https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md) 
 
 |                  Command          |                                             Description                                     |
 |-----------------------------------|---------------------------------------------------------------------------------------------| 
@@ -24,10 +22,6 @@ Check the **docker-compose.yml** file
 |`docker volume prune`	                                                  | remove all dangling volumes                           |
 |`docker network ls`                                                      | List networks                                         |
 
-##### Basic Docker commands for reference
-
-Checkout additional Docker and DockerHub commands here, [https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md](https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md) 
-
 |                           Command                                  |                                     Description                               |
 |--------------------------------------------------------------------|-------------------------------------------------------------------------------| 
 |`docker-machine ip default`							             | check your docker IP default, usually it is **192.168.99.102**			     |
@@ -45,9 +39,9 @@ Checkout additional Docker and DockerHub commands here, [https://github.com/Anan
 |`docker logs [container_id] --since YYYY-MM-DD`                     | list container logs since a particular date                                   |
 |`docker logs [container_id] --since YYYY-MM-DDTHH:MM:SS.000000000Z` | list container logs since a particular timestamp                              |
 
-#### Accessing Kafka Topics via Kakfka-UI
+#### Debezium Registration
 
-~~~shell
+~~~curl
 docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
 ~~~
 

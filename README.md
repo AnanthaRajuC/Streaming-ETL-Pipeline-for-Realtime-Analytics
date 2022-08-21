@@ -9,8 +9,11 @@
 ## Details
 
 - [Technology stack](documentation/TECHNOLOGY_STACK.MD)    
-- [Getting Started](documentation/GETTING_STARTED.MD)  
 - [Installation](documentation/INSTALLATION.MD)  
+- [Setup](documentation/SETUP.MD) 
+- [Getting Started](documentation/GETTING_STARTED.MD)  
+- [Reference](documentation/REFERENCE.MD)  
+
 
 ## Reporting Issues/Suggest Improvements
 
