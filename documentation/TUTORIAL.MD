@@ -63,31 +63,31 @@ Person Topic
 *   Check topics, streams and tables
 
 ~~~sql
-show topics;
+ksql> show topics;
 
-show streams;
+ksql> show streams;
 
-show tables;
+ksql> show tables;
 ~~~
 
 *	Declare Tables
 
 ~~~sql
-CREATE TABLE PERSON (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
+ksql> CREATE TABLE PERSON (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
 
-CREATE TABLE ADDRESS (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+ksql> CREATE TABLE ADDRESS (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
 ~~~
 
 ~~~sql
-SELECT * FROM PERSON EMIT CHANGES LIMIT 1;
+ksql> SELECT * FROM PERSON EMIT CHANGES LIMIT 1;
 
-SELECT * FROM ADDRESS EMIT CHANGES LIMIT 1;
+ksql> SELECT * FROM ADDRESS EMIT CHANGES LIMIT 1;
 ~~~
 
 Joins
 
 ~~~sql
-SELECT 
+ksql> SELECT 
 	P.NAME,
 	A.CITY
 FROM PERSON P
@@ -97,7 +97,7 @@ LIMIT 1;
 ~~~
 
 ~~~sql
-SELECT 
+ksql> SELECT 
   P.NAME, 
   A.CITY
 FROM PERSON P
@@ -108,34 +108,40 @@ LIMIT 1;
 ~~~
 
 ~~~sql
-CREATE TABLE PERSON_ADDRESS_ENRICHED (P_ID bigint,A_ID bigint,NAME VARCHAR,CITY VARCHAR) WITH (KAFKA_TOPIC='person_address_enriched',VALUE_FORMAT='JSON');
+ksql> CREATE TABLE PERSON_ADDRESS_ENRICHED (P_ID bigint,A_ID bigint,NAME VARCHAR,CITY VARCHAR) WITH (KAFKA_TOPIC='person_address_enriched',VALUE_FORMAT='JSON');
 ~~~
 
 *	Declare Streams
 
 ~~~sql
-CREATE STREAM PERSON_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
+ksql> CREATE STREAM PERSON_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
 
-CREATE STREAM ADDRESS_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+ksql> CREATE STREAM ADDRESS_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+~~~
+
+~~~sql
+ksql> SELECT * FROM PERSON_STREAM EMIT CHANGES LIMIT 1;
++-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+
+|ID                       |UUID                     |CREATED_DATE_TIME        |LAST_MODIFIED_DATE_TIME  |NAME                     |USERNAME                 |ADDRESS_ID               |
++-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+
+|1                        |ce8d2120-1f93-11ed-8647-0|2022-08-19T13:22:00.000  |2022-08-19T13:22:00.000  |d14                      |dbz14                    |1                        |
+|                         |c9a3cfadc50              |                         |                         |                         |                         |                         |
+Limit Reached
+Query terminated
 ~~~
 
 ~~~sql
 DESCRIBE PERSON_STREAM;
+select * from PERSON_STREAM;
 ~~~
 
 *	stream-stream join
 
 ~~~sql
-CREATE STREAM person_address_enriched WITH (KAFKA_TOPIC = 'person_address_enriched',FORMAT='JSON') AS
-SELECT
-	P.ID,
-	A.ID,
-	P.NAME,
-	A.CITY
-FROM PERSON_STREAM P
-LEFT OUTER JOIN ADDRESS_STREAM A on A.id = P.address_id;
+ksql> SET 'auto.offset.reset' = 'earliest';
 
-CREATE STREAM PERSON_ADDRESS_ENRICHED WITH (FORMAT='JSON', KAFKA_TOPIC='person_address_enriched', PARTITIONS=1, REPLICAS=1) AS SELECT
+ksql> CREATE STREAM PERSON_ADDRESS_ENRICHED_STREAM WITH (FORMAT='JSON', KAFKA_TOPIC='person_address_enriched', PARTITIONS=1, REPLICAS=1) AS 
+SELECT
   P.ID P_ID,
   A.ID A_ID,
   P.NAME NAME,
@@ -150,3 +156,18 @@ EMIT CHANGES;
 ~~~sql
 DROP TABLE IF EXISTS PERSON;
 ~~~
+
+~~~sql
+CREATE SINK CONNECTOR SINK_TXNS_ENRICHED_PG WITH (
+    'connector.class'                     = 'io.confluent.connect.jdbc.JdbcSinkConnector',
+    'connection.url'                      = 'jdbc:mysql://172.17.0.1:3306/',
+    'connection.user'                     = 'debezium',
+    'connection.password'                 = 'Debezium@123#',
+    'topics'                              = 'PERSON_ADDRESS_ENRICHED_STREAM',
+    'key.converter'						  ='org.apache.kafka.connect.json.JsonConverter',	
+	'key.converter.schemas.enable'		  = 'false',
+	'value.converter'					  ='org.apache.kafka.connect.json.JsonConverter',
+	'value.converter.schemas.enable'      = 'false'
+);
+~~~
+
