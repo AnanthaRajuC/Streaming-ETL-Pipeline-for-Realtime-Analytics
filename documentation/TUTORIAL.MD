@@ -1,3 +1,7 @@
+### MySQL
+
+Refer to [Getting Started](/documentation/GETTING_STARTED.MD)
+
 ### Debezium Registration
 
 ~~~shell
@@ -42,6 +46,8 @@ After Debezium registration.
 
 ![connector-status](images/03-debezium-connector-status.png)
 
+Kafka UI
+
 ![Kafka UI after Debezium Registration](images/05-kafka-topics-after-registration.png)   
 
 Person Topic
@@ -50,8 +56,77 @@ Person Topic
 
 ### Accessing ksqlDb via ksqldb-cli
 
-~~~shell
-docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+### ksqlDB
+
+*	Declare Tables
+
+~~~sql
+CREATE TABLE PERSON (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
+
+CREATE TABLE ADDRESS (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+
+CREATE TABLE PERSON_ADDRESS_ENRICHED (P_ID bigint,A_ID bigint,NAME VARCHAR,CITY VARCHAR) WITH (KAFKA_TOPIC='person_address_enriched',VALUE_FORMAT='JSON');
+
+show tables;
+
+SELECT * FROM PERSON EMIT CHANGES LIMIT 1;
+
+SELECT * FROM ADDRESS EMIT CHANGES LIMIT 1;
+
+SELECT 
+	P.NAME,
+	A.CITY
+FROM PERSON P
+LEFT JOIN ADDRESS A on A.id = P.address_id
+EMIT CHANGES 
+LIMIT 1;
+
+SELECT 
+  P.NAME, 
+  A.CITY
+FROM PERSON P
+INNER JOIN ADDRESS A
+ON A.id = P.address_id
+EMIT CHANGES
+LIMIT 1;
+
+DROP TABLE IF EXISTS PERSON;
 ~~~
 
-![ksqldb-cli](images/07-ksql-db-initial.png)]
+*	Declare Streams
+
+~~~sql
+show topics;
+
+CREATE STREAM PERSON_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
+
+CREATE STREAM ADDRESS_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+
+CREATE STREAM person_address_enriched WITH (KAFKA_TOPIC = 'person_address_enriched',FORMAT='JSON') AS
+SELECT
+	P.ID,
+	A.ID,
+	P.NAME,
+	A.CITY
+FROM PERSON_STREAM P
+LEFT OUTER JOIN ADDRESS_STREAM A on A.id = P.address_id;
+
+CREATE STREAM PERSON_ADDRESS_ENRICHED WITH (FORMAT='JSON', KAFKA_TOPIC='person_address_enriched', PARTITIONS=1, REPLICAS=1) AS SELECT
+  P.ID P_ID,
+  A.ID A_ID,
+  P.NAME NAME,
+  A.CITY CITY
+FROM PERSON_STREAM P
+LEFT OUTER JOIN ADDRESS_STREAM A WITHIN 1 HOURS GRACE PERIOD 30 MINUTES ON ((A.ID = P.ADDRESS_ID))
+EMIT CHANGES;
+
+show streams;
+
+DESCRIBE PERSON_STREAM;
+~~~
+
+*	Others
+
+~~~sql
+show topics;
+~~~

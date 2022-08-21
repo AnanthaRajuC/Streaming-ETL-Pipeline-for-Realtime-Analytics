@@ -1,17 +1,5 @@
 ## Setup
 
-*	**mysql.cnf** MySQL database configuration
-
-~~~txt
-[mysqld]
-server-id         = 223344
-log_bin           = mysql-bin
-expire_logs_days  = 1
-binlog_format     = row
-~~~
-
-## Setup
-
 1. Clone the repository
 
 ~~~shell
