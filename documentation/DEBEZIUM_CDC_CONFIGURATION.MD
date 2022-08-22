@@ -1,23 +1,10 @@
-docker run --tty --network mysql_debezium_cdc_apache_pinot_webproxy confluentinc/cp-kafkacat kafkacat -b kafka:9092 -C -s key=s -s value=avro -r http://schema-registry:8081 -t mysql.activemq.person
+### Debezium Registration
 
-
-docker run --tty --network streaming_etl_pipeline_mysql_webproxy confluentinc/cp-kafkacat kafkacat -b kafka:9092 -C -t person_address_enriched
-
-
-
-https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html
-
-
-https://github.com/debezium/debezium-examples/tree/main/unwrap-mongodb-smt
-
-
-
-
-
+~~~shell
 curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 127.0.0.1:8083/connectors/ -d '{
-  "name": "jdbc-sink",
+  "name": "streaming_ETL_pipeline_MySQL-connector",
   "config": {
-    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
     "database.hostname": "172.17.0.1",
     "database.port": "3306",
     "database.user": "debezium",
@@ -25,11 +12,6 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.server.name": "mysql",
 	  "database.server.id": "223344",
     "database.include.list": "streaming_etl_db",
-	"topics" : "person_address_enriched",
-	"auto.create" : "true",
-        "auto.evolve" : "true",
-        "insert.mode" : "upsert",
-		"pk.fields" : "P_ID",
 	  "database.allowPublicKeyRetrieval": true,
 	  "database.history.kafka.bootstrap.servers": "kafka:9092",
 	  "database.history.kafka.topic": "mysql-streaming_etl_db-person",
@@ -46,25 +28,26 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 	  "value.converter.schemas.enable": "false"
   }
 }'
+~~~
 
+![debezium-registration](images/01-debezium-registration.png)
 
+After Debezium registration.
 
+[http://localhost:8083/connectors](http://localhost:8083/connectors)  
 
+![connectors](images/02-debezium-connectors.png)
 
+[http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status](http://localhost:8083/connectors/streaming_ETL_pipeline_MySQL-connector/status) 
 
+![connector-status](images/03-debezium-connector-status.png)
 
+Kafka UI
 
+[http://localhost:8080](http://localhost:8080)  
 
+![Kafka UI after Debezium Registration](images/05-kafka-topics-after-registration.png)   
 
+Person Topic
 
-
-
-
-
-
-
-
-
-
-
-
+![Person Topic](images/06-kafka-topic-message.png)  

@@ -10,9 +10,11 @@
 
 - [Technology stack](documentation/TECHNOLOGY_STACK.MD)    
 - [Installation](documentation/INSTALLATION.MD)  
-- [Setup](documentation/SETUP.MD) 
-- [Getting Started](documentation/GETTING_STARTED.MD)  
-- [Tutorial](documentation/TUTORIAL.MD) 
+- [Project Setup](documentation/PROJECT_SETUP.MD) 
+- [Initial MySQL Preparation](documentation/INTIAL_MYSQL_PREPARATION.MD.MD)  
+- [Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
+- [ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
+- [ksqlDB Tables](documentation/KSQLDB_TABLES.MD) 
 - [Reference](documentation/REFERENCE.MD)  
 
 

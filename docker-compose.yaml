@@ -52,7 +52,7 @@ services:
 
   schema-registry:
     image: confluentinc/cp-schema-registry:latest
-    container_name: cp-schema-registry
+    container_name: schema-registry
     environment:
       - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
       - SCHEMA_REGISTRY_HOST_NAME=schema-registry
@@ -66,12 +66,8 @@ services:
   ksqldb-server:
     image: confluentinc/ksqldb-server:latest
     container_name: ksqldb-server
-    links:
-      - schema-registry
-      - kafka-connect-01
-      - kafka
     hostname: ksqldb-server
-    depends_on: [kafka, kafka-connect-01]
+    depends_on: [kafka]
     ports:
       - 8088:8088
     networks:
@@ -92,6 +88,8 @@ services:
     depends_on: [kafka, ksqldb-server]
     entrypoint: /bin/sh
     tty: true
+    environment:
+      KSQL_KSQL_CONNECT_URL: http://kafka-connect-01:8084
 
   kafka-connect-01:
     image: confluentinc/cp-kafka-connect-base:6.2.0
