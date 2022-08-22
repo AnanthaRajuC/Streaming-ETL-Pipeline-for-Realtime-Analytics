@@ -34,7 +34,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 
 After Debezium registration.
 
-[http://localhost:8083/connectors](http://localhost:8083/connectors)  
+[http://localhost:8083/connectors?expand=info&expand=status](http://localhost:8083/connectors?expand=info&expand=status)  
 
 ![connectors](images/02-debezium-connectors.png)
 

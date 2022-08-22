@@ -50,19 +50,6 @@ services:
     networks:
       - webproxy
 
-  schema-registry:
-    image: confluentinc/cp-schema-registry:latest
-    container_name: schema-registry
-    environment:
-      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
-      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
-      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
-    ports:
-      - 8081:8081
-    networks:
-      - webproxy
-    depends_on: [zookeeper, kafka]
-
   ksqldb-server:
     image: confluentinc/ksqldb-server:latest
     container_name: ksqldb-server
@@ -90,6 +77,19 @@ services:
     tty: true
     environment:
       KSQL_KSQL_CONNECT_URL: http://kafka-connect-01:8084
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    container_name: schema-registry
+    environment:
+      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
+    ports:
+      - 8081:8081
+    networks:
+      - webproxy
+    depends_on: [zookeeper, kafka]
 
   kafka-connect-01:
     image: confluentinc/cp-kafka-connect-base:6.2.0
