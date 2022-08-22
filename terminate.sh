@@ -1,39 +1,42 @@
 #!/bin/bash
-echo "Stopping Streaming ETL"
+echo -e "Stopping Streaming ETL \n\n"
 
-echo "Running containers"
+echo -e "Running containers \n\n"
 
 docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'
 
-echo "Stopping Kafka-ui"
-echo "docker stop kafka-ui"
+echo -e "Stopping Kafka-ui \n\n"
+echo -e "docker stop kafka-ui"
 
 docker stop kafka-ui
 
+# Wait for kafka-ui to stop
 sleep 5s
 
-echo "Removing Kafka-ui"
-echo "docker rm kafka-ui"
+echo -e "Removing Kafka-ui \n\n"
+echo -e "docker rm kafka-ui"
 
 docker rm kafka-ui
 
+# Wait for kafka-ui to be removed
 sleep 5s
 
-echo "docker-compose down"
+echo -e  "docker-compose down \n\n"
 docker-compose down
 
+# Wait for containers to be stopped and removed
 sleep 10s
 
-echo "docker ps"
+echo -e "docker ps \n\n"
 docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'
 
-echo "docker ps -a"
+echo -e "docker ps -a  \n\n"
 docker ps -a --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'
 
-echo "docker network ls"
+echo -e "docker network ls  \n\n"
 docker network ls
 
-echo "docker system df"
+echo -e "docker system df  \n\n"
 docker system df
 
 echo "DONE"

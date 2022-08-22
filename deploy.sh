@@ -11,4 +11,6 @@ sleep 30s
 
 docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'
 
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
 echo "DONE"
