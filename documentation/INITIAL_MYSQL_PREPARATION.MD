@@ -95,3 +95,7 @@ LEFT JOIN streaming_etl_db.address a on a.id = p.address_id
 LEFT JOIN streaming_etl_db.geo g on g.id = a.geo_id;
 ~~~
 
+~~~sql
+SELECT * FROM streaming_etl_db.person;
+SELECT * FROM streaming_etl_db.address;
+~~~

@@ -58,66 +58,15 @@ EMIT CHANGES;
 ### Kafka Sink MySQL DB
 
 ~~~sql
-CREATE SINK CONNECTOR SINK_TXNS_ENRICHED_PG WITH (
+CREATE SINK CONNECTOR SINK_PERSON_ADDRESS_ENRICHED_STREAM WITH (
     'connector.class'                     = 'io.confluent.connect.jdbc.JdbcSinkConnector',
     'connection.url'                      = 'jdbc:mysql://172.17.0.1:3306/',
     'connection.user'                     = 'debezium',
     'connection.password'                 = 'Debezium@123#',
     'topics'                              = 'PERSON_ADDRESS_ENRICHED_STREAM',
-    'key.converter'						  ='org.apache.kafka.connect.json.JsonConverter',	
-	'key.converter.schemas.enable'		  = 'false',
-	'value.converter'					  ='org.apache.kafka.connect.json.JsonConverter',
-	'value.converter.schemas.enable'      = 'false'
+    'key.converter'						            = 'org.apache.kafka.connect.json.JsonConverter',	
+	  'key.converter.schemas.enable'		    = 'false',
+	  'value.converter'					            = 'org.apache.kafka.connect.json.JsonConverter',
+	  'value.converter.schemas.enable'      = 'false'
 );
 ~~~
-
-### Tables
-
-*	Declare Tables
-
-~~~sql
-CREATE TABLE PERSON (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
-
-CREATE TABLE ADDRESS (id bigint PRIMARY KEY,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
-~~~
-
-~~~sql
-SELECT * FROM PERSON EMIT CHANGES LIMIT 1;
-
-SELECT * FROM ADDRESS EMIT CHANGES LIMIT 1;
-~~~
-
-Joins
-
-~~~sql
-SELECT 
-	P.NAME,
-	A.CITY
-FROM PERSON P
-LEFT JOIN ADDRESS A on A.id = P.address_id
-EMIT CHANGES 
-LIMIT 1;
-~~~
-
-~~~sql
-SELECT 
-  P.NAME, 
-  A.CITY
-FROM PERSON P
-INNER JOIN ADDRESS A
-ON A.id = P.address_id
-EMIT CHANGES
-LIMIT 1;
-~~~
-
-~~~sql
-CREATE TABLE PERSON_ADDRESS_ENRICHED (P_ID bigint,A_ID bigint,NAME VARCHAR,CITY VARCHAR) WITH (KAFKA_TOPIC='person_address_enriched',VALUE_FORMAT='JSON');
-~~~
-
-*	Others
-
-~~~sql
-DROP TABLE IF EXISTS PERSON;
-~~~
-
-
