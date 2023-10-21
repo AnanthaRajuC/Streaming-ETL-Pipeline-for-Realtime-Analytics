@@ -76,7 +76,7 @@ $ docker rm kafka-ui
 ~~~
 
 ~~~shell
-$ docker-compose down
+$ docker compose -f docker-compose.yaml down
 ~~~
 
 ~~~shell
