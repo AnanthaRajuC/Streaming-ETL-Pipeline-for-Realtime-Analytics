@@ -83,7 +83,7 @@ CREATE TABLE `person` (
 ~~~sql
 INSERT INTO `streaming_etl_db`.`geo`(`lat`,`lng`)VALUES('la14','lo14');
 INSERT INTO `streaming_etl_db`.`address`(`city`,`zipcode`,`state`,`geo_id`)VALUES('c14','z14','s14',1);
-INSERT INTO `streaming_etl_db`.`person`(`name`,`username`,`address_id`)VALUES('d14','dbz14','1');
+INSERT INTO `streaming_etl_db`.`person`(`first_name`,`last_name`,`email`,`gender`,`registration`,`age`,`address_id`)VALUES('fn14','ln14','example@domain.com','M',now(),34,1);
 ~~~
 
 *	Select Statement
