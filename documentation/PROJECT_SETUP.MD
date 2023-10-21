@@ -20,7 +20,7 @@ $ docker compose -f docker-compose.yaml pull
 The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!
 
 ~~~shell
-$ docker-compose up
+$ docker compose -f docker-compose.yaml up
 ~~~
 
 ~~~shell
