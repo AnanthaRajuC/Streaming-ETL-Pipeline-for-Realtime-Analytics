@@ -12,7 +12,7 @@ $ cd Streaming_ETL_pipeline_MySQL
 2. Pull all required docker images
 
 ~~~shell
-$ docker-compose pull
+$ docker compose -f docker-compose.yaml pull
 ~~~
 
 3. Start up the environment
