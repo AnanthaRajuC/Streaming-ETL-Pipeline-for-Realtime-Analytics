@@ -19,6 +19,9 @@ CREATE SCHEMA streaming_etl_db;
 -- use schema
 USE streaming_etl_db;
 
+-- Check User exists or not
+SELECT * FROM mysql.user where User = 'debezium';
+
 -- Create user 
 CREATE USER 'debezium' IDENTIFIED WITH mysql_native_password BY 'Debezium@123#';
 
@@ -89,13 +92,14 @@ INSERT INTO `streaming_etl_db`.`person`(`first_name`,`last_name`,`email`,`gender
 *	Select Statement
 
 ~~~sql
+SELECT * FROM streaming_etl_db.person;
+SELECT * FROM streaming_etl_db.address;
+SELECT * FROM streaming_etl_db.geo;
+~~~
+
+~~~sql
 SELECT * 
 FROM streaming_etl_db.person p
 LEFT JOIN streaming_etl_db.address a on a.id = p.address_id
 LEFT JOIN streaming_etl_db.geo g on g.id = a.geo_id;
-~~~
-
-~~~sql
-SELECT * FROM streaming_etl_db.person;
-SELECT * FROM streaming_etl_db.address;
 ~~~
