@@ -12,7 +12,7 @@ $ cd Streaming_ETL_pipeline_MySQL
 2. Pull all required docker images
 
 ~~~shell
-$ docker-compose pull
+$ docker compose -f docker-compose.yaml pull
 ~~~
 
 3. Start up the environment
@@ -20,7 +20,7 @@ $ docker-compose pull
 The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!
 
 ~~~shell
-$ docker-compose up
+$ docker compose -f docker-compose.yaml up
 ~~~
 
 ~~~shell
@@ -76,7 +76,7 @@ $ docker rm kafka-ui
 ~~~
 
 ~~~shell
-$ docker compose-down
+$ docker compose -f docker-compose.yaml down
 ~~~
 
 ~~~shell
