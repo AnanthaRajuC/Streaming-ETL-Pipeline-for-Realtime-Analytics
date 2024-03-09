@@ -11,10 +11,16 @@ $ cd Streaming_ETL_pipeline_MySQL
 
 #### Running the application via docker compose
 
+Validate the docker-compose file
+
+~~~shell
+docker-compose -f docker-compose.yaml config
+~~~
+
 2. Pull all required docker images
 
 ~~~shell
-$ docker compose -f docker-compose.yaml pull
+docker compose -f docker-compose.yaml pull
 ~~~
 
 3. Start up the environment
@@ -22,7 +28,7 @@ $ docker compose -f docker-compose.yaml pull
 The first time that you do this, the Docker images will be pulled down from the remote server. This may take a while!
 
 ~~~shell
-$ docker compose -f docker-compose.yaml up
+docker compose -f docker-compose.yaml up
 ~~~
 
 ~~~shell
@@ -41,7 +47,7 @@ Creating ksqldb-cli         ... done
 4. Optionally, start [Kafka UI](https://github.com/provectus/kafka-ui), an open-source web UI for Apache Kafka Management
 
 ~~~shell
-$ docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
+docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
 ~~~
 
 URL to access Kakfka-UI console: **http://localhost:8080**  
@@ -51,7 +57,7 @@ URL to access Kakfka-UI console: **http://localhost:8080**
 5. Make sure everything is up and running
 
 ~~~shell
-$ docker ps
+docker ps
 ~~~
 
 ![Docker Compose Up](images/09-docker-ps.png) 
@@ -64,7 +70,7 @@ As a first solution, try re-issuing the `docker-compose up -d` command.
 6. Launch the KSQL CLI in another terminal window.
 
 ~~~shell
-$ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ~~~
 
 ![ksqlDB CLI](images/10-ksql-db-initial.png) 
@@ -74,13 +80,13 @@ $ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 The shell script terminate.sh is designed to tear down the environment when triggered using sh terminate.sh. Alternatively, you may choose to follow the steps listed below, depending on your preference.
 
 ~~~shell
-$ docker stop kafka-ui
+docker stop kafka-ui
 
-$ docker rm kafka-ui
+docker rm kafka-ui
 ~~~
 
 ~~~shell
-$ docker compose -f docker-compose.yaml down
+docker compose -f docker-compose.yaml down
 ~~~
 
 ~~~shell

@@ -88,6 +88,17 @@ services:
     entrypoint: /bin/sh
     tty: true
 
+  debezium-ui:
+    image: debezium/debezium-ui:latest
+    container_name: debezium-ui
+    depends_on: [debezium]
+    ports:
+      - '8080:8080'
+    environment:
+      KAFKA_CONNECT_URIS: http://debezium:8083,http://localhost:8083
+    networks:
+      - webproxy
+
 networks:
   webproxy:
     driver: bridge

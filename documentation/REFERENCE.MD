@@ -119,3 +119,18 @@ AND DEFAULT_COLLATION_NAME != 'utf8_bin';
 ~~~
 
 
+docker-compose exec kafka bash -c "kafka-topics --list --bootstrap-server localhost:9092"
+
+__consumer_offsets
+__transaction_state
+_confluent-ksql-default__command_topic
+connect-status
+connect_configs
+connect_offsets
+dbserver.streaming_etl_db.address
+dbserver.streaming_etl_db.geo
+dbserver.streaming_etl_db.person
+default_ksql_processing_log
+schema-changes.streaming_etl_db
+
+docker-compose exec kafka bash -c "kafka-topics --bootstrap-server localhost:9092 --describe dbserver.streaming_etl_db.geo"
