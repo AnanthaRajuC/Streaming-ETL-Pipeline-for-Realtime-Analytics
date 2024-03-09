@@ -1,3 +1,4 @@
+
 # A Docker Compose must always start with the version tag.
 # We use '3' because it's the last version.
 version: "3.7"
@@ -21,7 +22,7 @@ services:
     depends_on: [zookeeper]
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -40,8 +41,8 @@ services:
       GROUP_ID: 1
       CONFIG_STORAGE_TOPIC: connect_configs
       OFFSET_STORAGE_TOPIC: connect_offsets
-      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
     depends_on: [kafka]
@@ -49,6 +50,19 @@ services:
       - 8083:8083
     networks:
       - webproxy
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    container_name: cp-schema-registry
+    environment:
+      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
+    ports:
+      - 8081:8081
+    networks:
+      - webproxy
+    depends_on: [zookeeper, kafka]
 
   ksqldb-server:
     image: confluentinc/ksqldb-server:latest
@@ -64,8 +78,6 @@ services:
       KSQL_BOOTSTRAP_SERVERS: kafka:9092
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
-      KSQL_KSQL_CONNECT_URL: http://kafka-connect-01:8084
-      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   ksqldb-cli:
     image: confluentinc/ksqldb-cli:latest
@@ -75,72 +87,6 @@ services:
     depends_on: [kafka, ksqldb-server]
     entrypoint: /bin/sh
     tty: true
-    environment:
-      KSQL_KSQL_CONNECT_URL: http://kafka-connect-01:8084
-
-  schema-registry:
-    image: confluentinc/cp-schema-registry:latest
-    container_name: schema-registry
-    environment:
-      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
-      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
-      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
-    ports:
-      - 8081:8081
-    networks:
-      - webproxy
-    depends_on: [zookeeper, kafka]
-
-  kafka-connect-01:
-    image: confluentinc/cp-kafka-connect-base:6.2.0
-    hostname: kafka-connect-01
-    container_name: kafka-connect-01
-    depends_on:
-      - kafka
-      - schema-registry
-    links:
-      - schema-registry
-      - kafka
-    ports:
-      - 8084:8084
-    networks:
-      - webproxy
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: "kafka:29092"
-      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect-01"
-      CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: kafka-connect-01
-      CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-01-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-01-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-01-status
-      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
-      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"
-      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
-    command: 
-      - bash 
-      - -c 
-      - |
-        echo "Installing connector plugins"
-        confluent-hub install --no-prompt mdrogalis/voluble:0.3.1
-        confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:5.5.3
-        # Sticking to 5.5.3 at the moment because of issue with 10.0.1 https://rmoff.net/2021/03/11/kafka-connect-sqlsyntaxerrorexception-blob/text-column-used-in-key-specification-without-a-key-length/
-        #
-        echo "Downloading JDBC driver"
-        cd /usr/share/confluent-hub-components/confluentinc-kafka-connect-jdbc
-        # Find the latest version of this https://dev.mysql.com/downloads/connector/j/
-        curl https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-8.0.23.tar.gz | tar xz 
-        #
-        echo "Launching Kafka Connect worker"
-        /etc/confluent/docker/run & 
-        #
-        sleep infinity
 
 networks:
   webproxy:
