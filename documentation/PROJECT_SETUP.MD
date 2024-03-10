@@ -1,6 +1,10 @@
 ## Setup
 
-The shell script deploy.sh is designed to initialize the environment when triggered using sh deploy.sh. Alternatively, you may choose to follow the steps listed below, depending on your preference.
+The shell script **deploy.sh** is designed to initialize the environment when triggered using **sh deploy.sh**. 
+
+![deploy](images/deploy.png)
+
+Alternatively, you may choose to follow the steps listed below, depending on your preference.
 
 1. Clone the repository
 
@@ -77,7 +81,11 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 ## Tear down the stack
 
-The shell script terminate.sh is designed to tear down the environment when triggered using sh terminate.sh. Alternatively, you may choose to follow the steps listed below, depending on your preference.
+The shell script **terminate.sh** is designed to tear down the environment when triggered using **sh terminate.sh**. 
+
+![terminate](images/terminate.png)
+
+Alternatively, you may choose to follow the steps listed below, depending on your preference.
 
 ~~~shell
 docker stop kafka-ui

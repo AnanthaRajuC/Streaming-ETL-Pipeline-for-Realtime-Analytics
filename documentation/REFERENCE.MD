@@ -134,3 +134,8 @@ default_ksql_processing_log
 schema-changes.streaming_etl_db
 
 docker-compose exec kafka bash -c "kafka-topics --bootstrap-server localhost:9092 --describe dbserver.streaming_etl_db.geo"
+
+
+
+docker remove container based on status
+docker rm $(docker ps --filter status=exited -q)
