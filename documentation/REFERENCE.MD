@@ -135,7 +135,7 @@ schema-changes.streaming_etl_db
 
 docker-compose exec kafka bash -c "kafka-topics --bootstrap-server localhost:9092 --describe dbserver.streaming_etl_db.geo"
 
+/home/anantha/kafka/bin/kafka-topics.sh --bootstrap-server=localhost:29092 --list
 
-
-docker remove container based on status
+- docker remove container based on status
 docker rm $(docker ps --filter status=exited -q)

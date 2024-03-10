@@ -142,3 +142,22 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 #### Person Topic
 
 ![Person Topic](images/06-kafka-topic-message.png)  
+
+
+#### Client Connecting from the Same Docker Network
+
+~~~shell
+docker-compose exec kafka bash -c "kafka-topics --list --bootstrap-server localhost:9092"
+~~~
+
+![Client Connect from Same Docker Network](images/client_connect_same_docker_network.png) 
+
+#### Client Connecting from the Same Host
+
+*update the path to kafka-topics.sh on your machine*
+
+~~~shell
+/home/anantha/kafka/bin/kafka-topics.sh --bootstrap-server=localhost:29092 --list
+~~~
+
+![Client Connect Same Host](images/client_connect_same_host.png) 

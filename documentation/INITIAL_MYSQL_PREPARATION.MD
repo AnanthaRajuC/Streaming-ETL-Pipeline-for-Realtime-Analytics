@@ -10,6 +10,12 @@ Initial Data setup.
 
 ### MySQL
 
+MySQL version Check
+
+~~~shell
+mysql --version
+~~~
+
 * Declare schema, user and permissions.
 
 ~~~sql
