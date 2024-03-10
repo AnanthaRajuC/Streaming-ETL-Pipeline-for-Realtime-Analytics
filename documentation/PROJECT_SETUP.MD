@@ -1,5 +1,10 @@
 ## Setup
 
+|                 Technology                                  |                              Description                        |
+|-------------------------------------------------------------|-----------------------------------------------------------------|
+|<a href="http://localhost:8080/">[Debezium](http://localhost:8080/)</a> |Debezium                             |
+|<a href="http://localhost:9099/">[[KafkaUI](http://localhost:9099/)](http://localhost:9099/)</a> |Kafka UI                             |
+
 The shell script **deploy.sh** is designed to initialize the environment when triggered using **sh deploy.sh**. 
 
 ![deploy](images/deploy.png)
