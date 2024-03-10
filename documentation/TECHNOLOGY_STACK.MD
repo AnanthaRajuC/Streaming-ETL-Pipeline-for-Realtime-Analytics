@@ -32,7 +32,8 @@
 
 ### Client - CLI/UI
 
-|                 Technology                                                                          |       Description                                       |
-|-----------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-|<a href="https://github.com/provectus/kafka-ui">kafka-ui</a>                                         |Open-Source Web UI for Apache Kafka Management           |
-|<a href="https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/cli-config/">ksqlDB CLI</a>|Interactive CLI to connect to ksqlDB                     |
+|                 Technology                                                                             |       Description                                          |
+|--------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
+|<a href="https://github.com/provectus/kafka-ui">kafka-ui</a>                                            |Open-Source Web UI for Apache Kafka Management              |
+|<a href="https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/cli-config/">ksqlDB CLI</a>   |Interactive CLI to connect to ksqlDB                        |
+|<a href="https://debezium.io/documentation/reference/stable/operations/debezium-ui.html">Debezium UI</a>|Interactive UI to set up and operate connectors more easily.|
