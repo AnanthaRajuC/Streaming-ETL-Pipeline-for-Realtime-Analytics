@@ -6,12 +6,43 @@
 -->
 # Streaming ETL pipeline MySQL
 
+<div align="center">
+
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CODE_OF_CONDUCT.md) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Checkout+this+recipe+for+streaming+ETL&url=https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL&hashtags=DataEngineering) [![Twitter Follow](https://img.shields.io/twitter/follow/anantharajuc?label=follow%20me&style=social)](https://twitter.com/anantharajuc)
+</div>
+
+<div align="center">
+  <sub>Built with ❤︎ by <a href="https://twitter.com/anantharajuc">Anantha Raju C</a> and <a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/graphs/contributors">contributors</a>
+</div>
+
+</br>
+
+<p align="center">
+	<a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/blob/master/README.md"><strong>Explore the docs »</strong></a>
+	<br />
+	<br />
+	<a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues">Report Bug</a>
+	·
+	<a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues">Request Feature</a>
+</p>
+
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+-->
+
+|     Service     | Badge | Badge | Badge | Badge | Badge |
+|-----------------|-------|-------|-------|-------|-------|
+|  **GitHub**     |[![GitHub last commit](https://img.shields.io/github/last-commit/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/commits/master)|[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/pulls)|[![GitHub issues](https://img.shields.io/github/issues/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues)|[![GitHub forks](https://img.shields.io/github/forks/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/network)|[![GitHub stars](https://img.shields.io/github/stars/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/stargazers)|
+|  **GitHub**     |![GitHub repo size](https://img.shields.io/github/repo-size/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|![GitHub top language](https://img.shields.io/github/languages/top/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.svg)|![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.svg)|![GitHub language count](https://img.shields.io/github/languages/count/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|
+
 ## Details
 
 - [Technology stack](documentation/TECHNOLOGY_STACK.MD)    
 - [Installation](documentation/INSTALLATION.MD)  
 - [Project Setup](documentation/PROJECT_SETUP.MD) 
-- [Initial MySQL Preparation](documentation/INTIAL_MYSQL_PREPARATION.MD)  
+- [Initial MySQL Preparation](documentation/INITIAL_MYSQL_PREPARATION.MD)  
 - [Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
 - [ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
 - [ksqlDB Tables](documentation/KSQLDB_TABLES.MD) 
