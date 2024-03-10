@@ -141,7 +141,7 @@ docker-compose exec kafka bash -c "kafka-topics --bootstrap-server localhost:909
 docker rm $(docker ps --filter status=exited -q)
 
 
-
+/home/anantha/kafka/bin/kafka-topics.sh --version
 
 
 /home/anantha/kafka/bin/kafka-topics.sh \
