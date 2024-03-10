@@ -139,3 +139,20 @@ docker-compose exec kafka bash -c "kafka-topics --bootstrap-server localhost:909
 
 - docker remove container based on status
 docker rm $(docker ps --filter status=exited -q)
+
+
+
+
+
+/home/anantha/kafka/bin/kafka-topics.sh \
+--bootstrap-server 0.0.0.0:29092 \
+--topic readings \
+--create --partitions 6 \
+--replication-factor 1
+
+
+
+
+
+
+

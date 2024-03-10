@@ -161,3 +161,39 @@ docker-compose exec kafka bash -c "kafka-topics --list --bootstrap-server localh
 ~~~
 
 ![Client Connect Same Host](images/client_connect_same_host.png) 
+
+#### Display Kafka Topic Messages from the Same Host
+
+~~~shell
+/home/anantha/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:29092 --topic dbserver.streaming_etl_db.geo --from-beginning
+~~~
+
+![Kafka Topic Contents](images/kafka_topic_contents.png) 
+
+#### Create a from the Same Host
+
+~~~shell
+/home/anantha/kafka/bin/kafka-topics.sh \
+--bootstrap-server 0.0.0.0:29092 \
+--topic readings \
+--create --partitions 6 \
+--replication-factor 1
+~~~
+
+![Create Kafka Topic](images/cretae_kafka_topic.png) 
+
+#### Describe Topic from the Same Host
+
+~~~shell
+/home/anantha/kafka/bin/kafka-topics.sh --bootstrap-server=localhost:29092 --describe dbserver.streaming_etl_db.geo
+~~~
+
+![Describe Kafka Topic](images/describe_kafka_topic.png) 
+
+#### Post Message to Topic from the Same Host
+
+~~~shell
+/home/anantha/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:29092 --topic readings
+~~~
+
+![Post Message To Kafka Topic](images/post_message_to_kafka_topic.png) 
