@@ -19,10 +19,11 @@
 
 ### Data
 
-|                 Technology                                  |                              Description                                                |
-|-------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-|<a href="https://www.mysql.com/">MySQL</a>                   |Open-Source Relational Database Management System                                        |
-|<a href="https://ksqldb.io/">ksqlDB</a>                      |Ddatabase purpose-built for stream processing applications on top of Apache Kafka        |
+|                 Technology                                  |                              Description                                           |
+|-------------------------------------------------------------|------------------------------------------------------------------------------------|
+|<a href="https://www.mysql.com/">MySQL</a>                   |Open-Source Relational Database Management System                                   |
+|<a href="https://clickhouse.com/">ClickHouse</a>             |Open-source database for real-time apps and analytics.                              |
+|<a href="https://ksqldb.io/">ksqlDB</a>                      |Database purpose-built for stream processing applications on top of Apache Kafka    |
 
 ### Change Data Capture
 
@@ -35,5 +36,5 @@
 |                 Technology                                                                             |       Description                                          |
 |--------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
 |<a href="https://github.com/provectus/kafka-ui">kafka-ui</a>                                            |Open-Source Web UI for Apache Kafka Management              |
-|<a href="https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/cli-config/">ksqlDB CLI</a>   |Interactive CLI to connect to ksqlDB                        |
 |<a href="https://debezium.io/documentation/reference/stable/operations/debezium-ui.html">Debezium UI</a>|Interactive UI to set up and operate connectors more easily.|
+|<a href="https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/cli-config/">ksqlDB CLI</a>   |Interactive CLI to connect to ksqlDB                        |

@@ -1,7 +1,7 @@
 #### Debezium Registration
 
 ~~~shell
-curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 127.0.0.1:8083/connectors/ -d @connector.json
+curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 127.0.0.1:8083/connectors/ -d @debeziumConfig
 ~~~
 
 or
@@ -16,25 +16,22 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.user": "debezium",
     "database.password": "Debezium@123#",
     "database.server.name": "mysql",
-	"database.server.id": "223344",
+	  "database.server.id": "223344",
     "database.include.list": "streaming_etl_db",
-	"database.allowPublicKeyRetrieval": true,
-	"database.history.kafka.bootstrap.servers": "kafka:9092",
-	"database.history.kafka.topic": "mysql-streaming_etl_db-person",
-	"schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
-    "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
-	"time.precision.mode": "connect",
+	  "database.allowPublicKeyRetrieval": true,
+	  "database.history.kafka.bootstrap.servers": "kafka:9092",
+	  "database.history.kafka.topic": "mysql-streaming_etl_db-person",
     "include.schema.changes": false,
-	"topic.prefix": "dbserver",
-    "transforms": "unwrap,dropTopicPrefix",
-	"transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-	"transforms.dropTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
-	"transforms.dropTopicPrefix.regex":"asgard.demo.(.*)",
-	"transforms.dropTopicPrefix.replacement":"$1",
-	"key.converter":"org.apache.kafka.connect.json.JsonConverter",
-	"key.converter.schemas.enable": "false",
-	"value.converter":"org.apache.kafka.connect.json.JsonConverter",
-	"value.converter.schemas.enable": "false"
+    "key.converter":"org.apache.kafka.connect.json.JsonConverter",
+	  "key.converter.schemas.enable": "false",
+	  "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+    "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
+	  "time.precision.mode": "connect",
+	  "topic.prefix": "dbserver",
+    "transforms": "unwrap",
+	  "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+	  "value.converter":"org.apache.kafka.connect.json.JsonConverter",
+	  "value.converter.schemas.enable": "false"
   }
 }'
 ~~~
@@ -54,30 +51,27 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
       "name": "streaming_ETL_pipeline_MySQL-connector",
       "config": {
         "connector.class": "io.debezium.connector.mysql.MySqlConnector",
-        "database.history.kafka.topic": "mysql-streaming_etl_db-person",
-        "transforms": "unwrap,dropTopicPrefix",
-        "transforms.dropTopicPrefix.regex": "asgard.demo.(.*)",
-        "include.schema.changes": "false",
-        "transforms.dropTopicPrefix.replacement": "$1",
-        "topic.prefix": "dbserver",
-        "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
-        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
         "database.allowPublicKeyRetrieval": "true",
         "database.user": "debezium",
         "database.server.id": "223344",
         "database.history.kafka.bootstrap.servers": "kafka:9092",
+        "database.history.kafka.topic": "mysql-streaming_etl_db-person",
         "time.precision.mode": "connect",
+        "transforms": "unwrap",
         "database.server.name": "mysql",
         "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
         "database.port": "3306",
+        "include.schema.changes": "false",
         "key.converter.schemas.enable": "false",
+        "topic.prefix": "dbserver",
+        "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
         "database.hostname": "172.17.0.1",
         "database.password": "Debezium@123#",
         "value.converter.schemas.enable": "false",
         "name": "streaming_ETL_pipeline_MySQL-connector",
-        "transforms.dropTopicPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
         "database.include.list": "streaming_etl_db"
       },
       "tasks": [
@@ -92,13 +86,13 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
       "name": "streaming_ETL_pipeline_MySQL-connector",
       "connector": {
         "state": "RUNNING",
-        "worker_id": "172.24.0.5:8083"
+        "worker_id": "172.23.0.6:8083"
       },
       "tasks": [
         {
           "id": 0,
           "state": "RUNNING",
-          "worker_id": "172.24.0.5:8083"
+          "worker_id": "172.23.0.6:8083"
         }
       ],
       "type": "source"
@@ -116,13 +110,13 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
   "name": "streaming_ETL_pipeline_MySQL-connector",
   "connector": {
     "state": "RUNNING",
-    "worker_id": "172.24.0.5:8083"
+    "worker_id": "172.23.0.6:8083"
   },
   "tasks": [
     {
       "id": 0,
       "state": "RUNNING",
-      "worker_id": "172.24.0.5:8083"
+      "worker_id": "172.23.0.6:8083"
     }
   ],
   "type": "source"
@@ -131,11 +125,13 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 
 #### Debezium UI
 
+[http://localhost:8080](http://localhost:8080) 
+
 ![debezium-ui](images/debezium_ui.png)
 
 #### Kafka UI
 
-[http://localhost:8080](http://localhost:8080)  
+[http://localhost:9099](http://localhost:9099)  
 
 ![Kafka UI after Debezium Registration](images/05-kafka-topics-after-registration.png)   
 
@@ -143,6 +139,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 
 ![Person Topic](images/06-kafka-topic-message.png)  
 
+--- 
 
 #### Client Connecting from the Same Docker Network
 

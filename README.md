@@ -4,7 +4,11 @@
 *** or simply open an issue with the tag "enhancement".
 *** Thanks again!
 -->
-# Streaming ETL pipeline MySQL
+# Real-Time Streaming ETL Pipeline / Streaming Analytics: Real-Time Data Insights
+
+![streaming_etl](images/streaming_etl.png)
+
+In this project we will create a simple streaming data pipeline to continuously capture the changes in a MySQL database and replicate them in near real-time into ClickHouse. 
 
 <div align="center">
 

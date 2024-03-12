@@ -19,9 +19,11 @@ SET 'auto.offset.reset' = 'earliest';
 ~~~
 
 ~~~sql
-CREATE STREAM PERSON_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,name VARCHAR,username VARCHAR,address_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.person',VALUE_FORMAT='JSON');
+CREATE STREAM PERSON_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,first_name VARCHAR,last_name VARCHAR,email VARCHAR,gender VARCHAR,registration TIMESTAMP, age bigint, address_id bigint) WITH (KAFKA_TOPIC='dbserver.streaming_etl_db.person',VALUE_FORMAT='JSON');
+~~~
 
-CREATE STREAM ADDRESS_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,street VARCHAR,suite VARCHAR,zipcode VARCHAR,geo_id bigint) WITH (KAFKA_TOPIC='mysql.streaming_etl_db.address',VALUE_FORMAT='JSON');
+~~~sql
+CREATE STREAM ADDRESS_STREAM (id bigint,uuid VARCHAR,created_date_time TIMESTAMP,last_modified_date_time TIMESTAMP,city VARCHAR,zipcode VARCHAR,state VARCHAR, geo_id bigint) WITH (KAFKA_TOPIC='dbserver.streaming_etl_db.address',VALUE_FORMAT='JSON');
 ~~~
 
 ~~~sql

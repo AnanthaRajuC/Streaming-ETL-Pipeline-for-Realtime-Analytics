@@ -87,13 +87,17 @@ CREATE TABLE `person` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ~~~
 
-*	Sample Data
+*	Sample Record
 
 ~~~sql
 INSERT INTO `streaming_etl_db`.`geo`(`lat`,`lng`)VALUES('la14','lo14');
 INSERT INTO `streaming_etl_db`.`address`(`city`,`zipcode`,`state`,`geo_id`)VALUES('c14','z14','s14',1);
 INSERT INTO `streaming_etl_db`.`person`(`first_name`,`last_name`,`email`,`gender`,`registration`,`age`,`address_id`)VALUES('fn14','ln14','example@domain.com','M',now(),34,1);
 ~~~
+
+* Sample Dataset
+
+Execute the sample files in **/data/** folder in the following order *1_geo.sql, 2_address.sql, 3_person.sql*
 
 *	Select Statement
 
@@ -102,6 +106,8 @@ SELECT * FROM streaming_etl_db.person;
 SELECT * FROM streaming_etl_db.address;
 SELECT * FROM streaming_etl_db.geo;
 ~~~
+
+*	Join Statement
 
 ~~~sql
 SELECT * 

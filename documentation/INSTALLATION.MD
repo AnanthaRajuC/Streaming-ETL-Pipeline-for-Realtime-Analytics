@@ -2,6 +2,8 @@
 
 These instructions will provide you with the installation information necessary to run the repository on your local machine for development and testing purposes.
 
+This project should work for any type of installation, but you’ll need to change host names accordingly. 
+
 <details open="open">
 	<ul>
 		<li><a href="#softwares">Softwares</a></li>
@@ -35,15 +37,18 @@ docker --version
 docker-compose --version
 ~~~
 
-*	You need to have **MySQL** database installed on your machine.
+*	[MySQL](https://www.mysql.com/)
 
 ~~~shell
 mysql --version
 ~~~
 
-*   `MySQL Workbench` or on any other MySQL database client/console.  
+*	[ClickHouse](https://clickhouse.com/) 
 
-## Configuration
+*   `MySQL Workbench` or any other MySQL database client/console.  
+*   [DBeaver Community](https://dbeaver.io/) or any other ClickHouse database client/console.  
+
+## MySQL Configuration
 
 */etc/mysql/mysql.conf.d/*
 

@@ -1,9 +1,11 @@
 ## Setup
 
-|                 Technology                                  |                              Description                        |
-|-------------------------------------------------------------|-----------------------------------------------------------------|
-|<a href="http://localhost:8080/">[Debezium](http://localhost:8080/)</a> |Debezium                             |
-|<a href="http://localhost:9099/">[[KafkaUI](http://localhost:9099/)](http://localhost:9099/)</a> |Kafka UI                             |
+|                 URL                                                       |               Component                              |
+|---------------------------------------------------------------------------|------------------------------------------------------|
+|<a href="http://localhost:8080/">[Debezium UI](http://localhost:8080/)</a> |Debezium UI                                           |
+|<a href="http://localhost:9099/">[KafkaUI](http://localhost:9099/)</a>     |Kafka UI                                              |
+
+We will use docker compose for a fast deployment of the demo. 
 
 The shell script **deploy.sh** is designed to initialize the environment when triggered using **sh deploy.sh**. 
 
