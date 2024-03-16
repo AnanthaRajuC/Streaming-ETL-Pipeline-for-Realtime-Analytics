@@ -97,7 +97,15 @@ INSERT INTO `streaming_etl_db`.`person`(`first_name`,`last_name`,`email`,`gender
 
 * Sample Dataset
 
-Execute the sample files in **/data/** folder in the following order *1_geo.sql, 2_address.sql, 3_person.sql*
+Execute the sample files in **/data/** folder in the following order 
+
+- 1_geo.sql  
+- 2_address.sql  
+- 3_person.sql  
+
+* Sample Events generator
+
+**/data/fake-events.py**
 
 *	Select Statement
 

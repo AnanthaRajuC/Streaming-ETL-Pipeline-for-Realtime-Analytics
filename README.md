@@ -6,7 +6,7 @@
 -->
 # Real-Time Streaming ETL Pipeline / Streaming Analytics: Real-Time Data Insights
 
-![streaming_etl](images/streaming_etl.png)
+![streaming_etl](documentation/images/streaming_etl.png)
 
 In this project we will create a simple streaming data pipeline to continuously capture the changes in a MySQL database and replicate them in near real-time into ClickHouse. 
 
@@ -50,6 +50,7 @@ In this project we will create a simple streaming data pipeline to continuously 
 - [Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
 - [ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
 - [ksqlDB Tables](documentation/KSQLDB_TABLES.MD) 
+- [ClickHouse](documentation/ClickHouse.MD) 
 - [Reference](documentation/REFERENCE.MD)  
 
 

@@ -2,22 +2,22 @@
 
 |                 URL                                                       |               Component                              |
 |---------------------------------------------------------------------------|------------------------------------------------------|
-|<a href="http://localhost:8080/">[Debezium UI](http://localhost:8080/)</a> |Debezium UI                                           |
-|<a href="http://localhost:9099/">[KafkaUI](http://localhost:9099/)</a>     |Kafka UI                                              |
+|<a href="http://localhost:8080/">[Debezium UI](http://localhost:8080/)</a> |Debezium UI  - http://localhost:8080/                 |
+|<a href="http://localhost:9099/">[KafkaUI](http://localhost:9099/)</a>     |Kafka UI     - http://localhost:9099/                 |
 
-We will use docker compose for a fast deployment of the demo. 
-
-The shell script **deploy.sh** is designed to initialize the environment when triggered using **sh deploy.sh**. 
+We will use docker compose for a fast deployment of the demo. The shell script **deploy.sh** is designed to initialize the environment when triggered using **sh deploy.sh**. 
 
 ![deploy](images/deploy.png)
+
+--- 
 
 Alternatively, you may choose to follow the steps listed below, depending on your preference.
 
 1. Clone the repository
 
 ~~~shell
-$ git clone https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.git
-$ cd Streaming_ETL_pipeline_MySQL
+git clone https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.git
+cd Streaming_ETL_pipeline_MySQL
 ~~~
 
 #### Running the application via docker compose
@@ -73,7 +73,7 @@ docker ps
 
 ![Docker Compose Up](images/09-docker-ps.png) 
 
-IMPORTANT: If any components do not show "Up" under the `Status` column (e.g., they say "Exit") then you must rectify this before continuing.
+**IMPORTANT**: If any components do not show "Up" under the `Status` column (e.g., they say "Exit") then you must rectify this before continuing.
 As a first solution, try re-issuing the `docker-compose up -d` command.
 
 #### Accessing ksqlDb via ksqldb-cli  
@@ -85,6 +85,8 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ~~~
 
 ![ksqlDB CLI](images/10-ksql-db-initial.png) 
+
+--- 
 
 ## Tear down the stack
 
