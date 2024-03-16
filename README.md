@@ -45,12 +45,13 @@ In this project we will create a simple streaming data pipeline to continuously 
 
 - [Technology stack](documentation/TECHNOLOGY_STACK.MD)    
 - [Installation](documentation/INSTALLATION.MD)  
-- [Project Setup](documentation/PROJECT_SETUP.MD) 
-- [Initial MySQL Preparation](documentation/INITIAL_MYSQL_PREPARATION.MD)  
-- [Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
-- [ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
-- [ksqlDB Tables](documentation/KSQLDB_TABLES.MD) 
-- [ClickHouse](documentation/ClickHouse.MD) 
+- [01 - Project Setup](documentation/PROJECT_SETUP.MD) 
+- [02 - Initial MySQL Preparation](documentation/INITIAL_MYSQL_PREPARATION.MD)  
+- [03 - Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
+- [04 - ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
+- [ksqlDB Tables(Optional)](documentation/KSQLDB_TABLES.MD) 
+- [05 - ClickHouse](documentation/ClickHouse.MD) 
+
 - [Reference](documentation/REFERENCE.MD)  
 
 

@@ -8,7 +8,7 @@ show tables;
 
 --- 
 
-- 1. First, we will define the target MergeTree table.
+1. First, we will define the target MergeTree table.
 
 ~~~sql
 CREATE TABLE KafkaEngine.person_address_enriched (
@@ -19,7 +19,7 @@ CREATE TABLE KafkaEngine.person_address_enriched (
 ORDER BY (P_ID);
 ~~~
 
-- 2. create a table using the Kafka engine to connect to the topic and read data.
+2. create a table using the Kafka engine to connect to the topic and read data.
 
 ~~~sql
 CREATE TABLE KafkaEngine.person_address_enriched_queue (
@@ -35,7 +35,7 @@ SETTINGS kafka_broker_list = 'localhost:29092',
        kafka_max_block_size = 1048576;
 ~~~
 
-- 3. Finally, we create a materialized view to transfer data between Kafka and the merge tree table.
+3. Finally, we create a materialized view to transfer data between Kafka and the merge tree table.
 
 ~~~sql
 CREATE MATERIALIZED VIEW KafkaEngine.person_address_enriched_queue_mv TO KafkaEngine.person_address_enriched AS
@@ -45,6 +45,8 @@ SELECT
   CITY
 FROM KafkaEngine.person_address_enriched_queue;
 ~~~
+
+In the data folder initiate the fake-events.py program or insert few records manually to view the data getting populated in the person_address_enriched table.
 
 ~~~sql
 SELECT *
