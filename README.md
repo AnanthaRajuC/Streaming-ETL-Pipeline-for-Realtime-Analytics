@@ -51,7 +51,8 @@ In this project we will create a simple streaming data pipeline to continuously 
 - [04 - ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
 - [ksqlDB Tables(Optional)](documentation/KSQLDB_TABLES.MD) 
 - [05 - ClickHouse](documentation/ClickHouse.MD) 
-
+- [06 - dbt (Optional)](documentation/DBT.MD) 
+- 
 - [Reference](documentation/REFERENCE.MD)  
 
 
