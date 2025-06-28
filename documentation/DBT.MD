@@ -19,10 +19,6 @@ dbt operates as an additional analytics layer on top of the existing streaming E
 
 ## Setup and Initialization
 
-**Project Initialization Process**
-
-## Setup and Initialization
-
 ### Project Initialization Process
 
 ~~~bash

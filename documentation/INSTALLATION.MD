@@ -28,7 +28,7 @@ docker --version
 # Expected: Docker version 20.10.0 or higher
 
 # Verify Docker Compose installation  
-docker-compose --version
+docker compose version
 # Expected: docker-compose version 1.29.0 or higher
 ~~~
 
@@ -71,6 +71,8 @@ The source MySQL database requires specific configuration for Change Data Captur
 
 Create or modify the MySQL configuration file at */etc/mysql/mysql.conf.d/*
 
+`cat mysqld.cnf`
+
 ~~~txt
 [mysqld]
 server-id         = 223344
@@ -102,7 +104,7 @@ docker system info | grep Memory
 docker info
 
 # Verify Docker Compose functionality
-docker-compose version
+docker compose version
 ~~~
 
 **Network Connectivity Check**
@@ -116,6 +118,8 @@ docker network rm test-network
 
 # Verify external database connectivity
 mysql -h 172.17.0.1 -P 3306 -u root -p
+
+mysql -h localhost -P 3306 -u root -p
 ~~~
 
 **Configuration Verification**
