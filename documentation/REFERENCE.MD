@@ -1,6 +1,12 @@
 ## Reference
 
+This page provides a comprehensive reference of all command-line interfaces, REST API endpoints, and operational procedures for managing the Streaming ETL Pipeline. It covers Docker container operations, Kafka topic management, Debezium connector configuration, ksqlDB stream processing, and system monitoring commands.
+
 Checkout additional Docker and DockerHub commands here, [https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md](https://github.com/AnanthaRajuC/Hacks-and-Code-Snippets/blob/master/Docker.md) 
+
+## Docker Container Management
+
+**Container Lifecycle Commands**
 
 |                  Command          |                                             Description                                     |
 |-----------------------------------|---------------------------------------------------------------------------------------------| 
@@ -39,6 +45,7 @@ Checkout additional Docker and DockerHub commands here, [https://github.com/Anan
 |`docker logs [container_id] --since YYYY-MM-DD`                     | list container logs since a particular date                                   |
 |`docker logs [container_id] --since YYYY-MM-DDTHH:MM:SS.000000000Z` | list container logs since a particular timestamp                              |
 
+## ksqlDB Stream Processing
 
 ##### Basic ksqlDb commands for reference
 
@@ -89,13 +96,20 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 
 ![connector-status](images/03-debezium-connector-status.png)
 
-##### MySQL
+### MySQL Database Operations
+
+**Binary Log Management**
 
 ~~~sql
 SHOW BINARY LOGS;
 
 PURGE BINARY LOGS TO 'mysql-bin.000005';
+~~~
 
+**Database Schema Inspection**
+
+~~~sql
+-- Check character set for specific column
 SELECT 
 	character_set_name 
 FROM information_schema.`COLUMNS` 
@@ -103,14 +117,17 @@ WHERE table_schema = "streaming_etl_db"
 AND table_name = "address"
 AND column_name = "uuid";
 
+-- Show full column information
 SHOW FULL COLUMNS FROM streaming_etl_db.address; 
 
+-- Check database charset and collation
 SELECT 
 	SCHEMA_NAME 'streaming_etl_db', 
 	default_character_set_name 'charset', 
 	DEFAULT_COLLATION_NAME 'collation' 
 FROM information_schema.SCHEMATA;
 
+-- Check for non-UTF8 collations
 SELECT 
 	DEFAULT_COLLATION_NAME 
 FROM information_schema.SCHEMATA S 

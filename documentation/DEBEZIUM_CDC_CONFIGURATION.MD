@@ -1,3 +1,38 @@
+### Debezium CDC Configuration
+
+This document covers the configuration and setup of Debezium Change Data Capture (CDC) to stream data changes from MySQL to Kafka topics. It details the connector registration process, configuration parameters, and operational procedures for the `streaming_ETL_pipeline_MySQL-connector`.
+
+## Connector Configuration Structure
+
+The Debezium MySQL connector configuration consists of several key parameter categories:
+
+**Database Connection Parameters**
+
+| Parameter              | Value          | Purpose                                       |
+|------------------------|----------------|-----------------------------------------------|
+| `database.hostname`    | 172.17.0.1     | MySQL server host address                     |
+| `database.port`        | 3306           | MySQL server port                             |
+| `database.user`        | debezium       | Database user with replication privileges     |
+| `database.password`    | Debezium@123#  | Database user password                        |
+| `database.server.id`   | 223344         | Unique MySQL server identifier                |
+
+**Data Capture Parameters**
+
+| Parameter               | Value             | Purpose                                          |
+|-------------------------|-------------------|--------------------------------------------------|
+| `database.include.list` | streaming_etl_db  | Databases to monitor for changes                 |
+| `topic.prefix`          | dbserver          | Prefix for generated Kafka topic names           |
+| `database.server.name`  | mysql             | Logical server name for topic naming             |
+
+**Message Format Parameters**
+
+| Parameter                      | Value                                      | Purpose                                 |
+|--------------------------------|--------------------------------------------|-----------------------------------------|
+| `key.converter`                | org.apache.kafka.connect.json.JsonConverter | Key serialization format               |
+| `value.converter`              | org.apache.kafka.connect.json.JsonConverter | Value serialization format             |
+| `key.converter.schemas.enable` | false                                      | Disable schema in key messages         |
+| `value.converter.schemas.enable` | false                                    | Disable schema in value messages       |
+
 #### Debezium Registration
 
 ~~~shell

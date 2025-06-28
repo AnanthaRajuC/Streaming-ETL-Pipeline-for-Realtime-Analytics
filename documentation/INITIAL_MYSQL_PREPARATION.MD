@@ -1,6 +1,6 @@
-## Initial MySQL preparation
+## Initial MySQL Database Preparation
 
-Initial Data setup.
+This section covers the setup and configuration of the MySQL source database that serves as the entry point for the streaming ETL pipeline. The database preparation involves creating the schema, configuring database users with appropriate permissions for change data capture, establishing table structures with foreign key relationships, and populating initial sample data.
 
 <details open="open">
 	<ul>
@@ -8,15 +8,9 @@ Initial Data setup.
 	</ul>
 </details>
 
-### MySQL
+### Schema and Database Configuration
 
-MySQL version Check
-
-~~~shell
-mysql --version
-~~~
-
-* Declare schema, user and permissions.
+The initial setup creates the dedicated schema and verifies MySQL version compatibility:
 
 ~~~sql
 -- create schema
@@ -24,10 +18,21 @@ CREATE SCHEMA streaming_etl_db;
 
 -- use schema
 USE streaming_etl_db;
+~~~
 
--- Check User exists or not
-SELECT * FROM mysql.user where User = 'debezium';
+**MySQL Version Verification** Before proceeding with setup, verify MySQL version compatibility using:
 
+~~~bash
+mysql --version
+~~~
+
+## Debezium User Configuration
+
+The pipeline requires a dedicated MySQL user with specific privileges to enable change data capture functionality. The `debezium` user must have replication permissions to read the MySQL binary log.
+
+**User Creation and Privileges**
+
+~~~sql
 -- Create user 
 CREATE USER 'debezium' IDENTIFIED WITH mysql_native_password BY 'Debezium@123#';
 
@@ -38,7 +43,23 @@ GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *
 FLUSH PRIVILEGES;
 ~~~
 
-*	Declare Tables
+**Required Privileges Explained**
+
+| Privilege             | Purpose                                   |
+|------------------------|-------------------------------------------|
+| `SELECT`              | Read table data for initial snapshots     |
+| `RELOAD`              | Flush tables and logs during setup        |
+| `SHOW DATABASES`      | List databases for connector configuration|
+| `REPLICATION SLAVE`   | Read binary log entries                   |
+| `REPLICATION CLIENT`  | Check replication status                  |
+
+## Table Structure and Relationships
+
+The database schema implements a hierarchical data model with three interconnected tables representing geographical data, address information, and person records.
+
+**Table Definitions**
+
+The `geo` table stores geographical coordinates and serves as the foundation of the hierarchy:
 
 ~~~sql
 CREATE TABLE `geo` (
@@ -51,6 +72,8 @@ CREATE TABLE `geo` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='Application Log.';
 ~~~
+
+The `address` table contains location information with foreign key reference to `geo`:
 
 ~~~sql
 CREATE TABLE `address` (
@@ -67,6 +90,8 @@ CREATE TABLE `address` (
   CONSTRAINT `FKC_geo_id` FOREIGN KEY (`geo_id`) REFERENCES `geo` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ~~~
+
+The `person` table stores individual records with foreign key reference to `address`:
 
 ~~~sql
 CREATE TABLE `person` (
@@ -87,7 +112,13 @@ CREATE TABLE `person` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ~~~
 
-*	Sample Record
+## Data Population Strategy
+
+The database preparation includes multiple approaches for populating initial data, from single record examples to bulk dataset loading and automated event generation.
+
+**Sample Record Insertion**
+
+Basic sample data can be inserted to verify table relationships:
 
 ~~~sql
 INSERT INTO `streaming_etl_db`.`geo`(`lat`,`lng`)VALUES('la14','lo14');
@@ -95,27 +126,36 @@ INSERT INTO `streaming_etl_db`.`address`(`city`,`zipcode`,`state`,`geo_id`)VALUE
 INSERT INTO `streaming_etl_db`.`person`(`first_name`,`last_name`,`email`,`gender`,`registration`,`age`,`address_id`)VALUES('fn14','ln14','example@domain.com','M',now(),34,1);
 ~~~
 
-* Sample Dataset
+## Bulk Data Loading Sequence
 
-Execute the sample files in **/data/** folder in the following order 
+The data files in the `/data/` directory must be executed in the correct order to maintain referential integrity:
 
-- 1_geo.sql  
-- 2_address.sql  
-- 3_person.sql  
+**Loading Order**:
 
-* Sample Events generator
+- **1_geo.sql** - Creates 50 geographical coordinate records
+- **2_address.sql** - Creates 50 address records with `geo_id` foreign keys
+- **3_person.sql** - Creates 50 person records with `address_id` foreign keys
 
-**/data/fake-events.py**
+## Automated Event Generation
 
-*	Select Statement
+For continuous testing and demonstration purposes, the system includes a Python-based event generator:
+
+**Event Generator Location**: `/data/fake-events.py`
+
+This script generates ongoing database changes to simulate real-world operational data modifications, enabling demonstration of the streaming ETL pipeline's change data capture capabilities.
+
+## Data Verification and Testing
+
+**Basic Data Queries**: Basic Data Queries
 
 ~~~sql
+-- Individual table verification
 SELECT * FROM streaming_etl_db.person;
 SELECT * FROM streaming_etl_db.address;
 SELECT * FROM streaming_etl_db.geo;
 ~~~
 
-*	Join Statement
+**Relationship Verification Query**: Confirm foreign key relationships and data integrity:
 
 ~~~sql
 SELECT * 
@@ -123,3 +163,28 @@ FROM streaming_etl_db.person p
 LEFT JOIN streaming_etl_db.address a on a.id = p.address_id
 LEFT JOIN streaming_etl_db.geo g on g.id = a.geo_id;
 ~~~
+
+This query performs the same JOIN operations that will be replicated in the ksqlDB stream processing layer, making it useful for validating expected results.
+
+## Integration with Debezium Configuration
+
+The prepared database connects to the Debezium MySQL connector through specific configuration parameters that reference the database setup:
+
+**Connection Parameters**
+
+| Parameter               | Value             | Purpose                         |
+|-------------------------|-------------------|----------------------------------|
+| `database.hostname`     | 172.17.0.1        | MySQL host address              |
+| `database.port`         | 3306              | MySQL port                      |
+| `database.user`         | debezium          | User created in preparation     |
+| `database.password`     | Debezium@123#     | User password                   |
+| `database.include.list` | streaming_etl_db  | Target schema                   |
+| `topic.prefix`          | dbserver          | Kafka topic prefix              |
+
+The connector creates Kafka topics with the naming pattern: **dbserver.streaming_etl_db.{table_name}**
+
+**Generated Topics**:
+
+- `dbserver.streaming_etl_db.geo `
+- `dbserver.streaming_etl_db.address`  
+- `dbserver.streaming_etl_db.person`  
