@@ -1,4 +1,14 @@
-## ClickHouse
+## ClickHouse Analytics Integration
+
+**Purpose and Scope**
+
+This document describes the configuration and setup of ClickHouse as the analytics database in the streaming ETL pipeline. ClickHouse serves as the final destination for real-time data streamed from Kafka topics, providing high-performance OLAP capabilities for analytical queries. This page covers the table schema definitions, Kafka integration setup, and data ingestion patterns specific to ClickHouse.
+
+## Database and Table Structure
+
+**Database Configuration** 
+
+ClickHouse uses a dedicated database called KafkaEngine to organize all streaming-related tables and views:
 
 ~~~sql
 Create database KafkaEngine;
