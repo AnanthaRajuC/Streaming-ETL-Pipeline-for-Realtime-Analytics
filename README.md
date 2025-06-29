@@ -43,6 +43,7 @@ In this project we will create a simple streaming data pipeline to continuously 
 
 ## Details
 
+- [Overview](documentation/OVERVIEW.MD)    
 - [Technology stack](documentation/TECHNOLOGY_STACK.MD)    
 - [Installation](documentation/INSTALLATION.MD)  
 - [01 - Project Setup](documentation/PROJECT_SETUP.MD) 
