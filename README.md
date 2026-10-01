@@ -41,6 +41,27 @@ In this project we will create a simple streaming data pipeline to continuously 
 |  **GitHub**     |[![GitHub last commit](https://img.shields.io/github/last-commit/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/commits/master)|[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/pulls)|[![GitHub issues](https://img.shields.io/github/issues/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues)|[![GitHub forks](https://img.shields.io/github/forks/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/network)|[![GitHub stars](https://img.shields.io/github/stars/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/stargazers)|
 |  **GitHub**     |![GitHub repo size](https://img.shields.io/github/repo-size/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|![GitHub top language](https://img.shields.io/github/languages/top/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.svg)|![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.svg)|![GitHub language count](https://img.shields.io/github/languages/count/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|
 
+## Quick Start
+
+Requires Docker with the Compose v2 plugin. Everything, including MySQL and ClickHouse, runs in containers.
+
+~~~bash
+# 1. Start every service and wait until they are healthy (MySQL is created with schema, CDC user and sample data)
+./deploy.sh
+
+# 2. Register the Debezium MySQL connector
+curl -i -X POST -H "Content-Type:application/json" localhost:8083/connectors/ -d @debeziumConfig.json
+
+# 3. Create the ksqlDB streams        -> documentation/KSQLDB_STREAMS.MD
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
+# 4. Create the ClickHouse tables     -> documentation/ClickHouse.MD
+docker exec -it clickhouse clickhouse-client --password root
+
+# 5. Tear everything down (add -v to `docker compose down` to also drop the data)
+./terminate.sh
+~~~
+
 ## Details
 
 - [Overview](documentation/OVERVIEW.MD)    
@@ -53,7 +74,6 @@ In this project we will create a simple streaming data pipeline to continuously 
 - [ksqlDB Tables(Optional)](documentation/KSQLDB_TABLES.MD) 
 - [05 - ClickHouse](documentation/ClickHouse.MD) 
 - [06 - dbt (Optional)](documentation/DBT.MD) 
-- 
 - [Reference](documentation/REFERENCE.MD)  
 
 

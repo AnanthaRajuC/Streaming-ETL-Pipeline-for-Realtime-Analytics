@@ -1,4 +1,33 @@
 version: 2
 
 sources:
-- name: KafkaEngine
+  - name: KafkaEngine
+    schema: KafkaEngine
+    tables:
+      - name: person_address_enriched
+        description: MergeTree table filled from the person_address_enriched Kafka topic by person_address_enriched_queue_mv.
+        columns:
+          - name: P_ID
+            tests:
+              - not_null
+
+models:
+  - name: rta_initial
+    description: Top 5 cities by number of enriched person events (view).
+    columns:
+      - name: CITY
+        tests:
+          - unique
+      - name: occurrences
+        tests:
+          - not_null
+
+  - name: rta_initial_2
+    description: Top 5 cities by number of enriched person events (materialized table).
+    columns:
+      - name: CITY
+        tests:
+          - unique
+      - name: occurrences
+        tests:
+          - not_null

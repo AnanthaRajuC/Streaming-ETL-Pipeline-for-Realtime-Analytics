@@ -65,6 +65,9 @@ Install database management clients for easier interaction with the system:
 
 ### MySQL Configuration
 
+> MySQL now runs as the `mysql` service in `docker-compose.yaml` with binary logging already enabled, so this
+> section is only needed if you point Debezium at your own MySQL server instead.
+
 The source MySQL database requires specific configuration for Change Data Capture (CDC) functionality. Configure the MySQL server with binary logging enabled.
 
 **MySQL Server Configuration**
@@ -116,10 +119,8 @@ Ensure Docker can create networks and containers can communicate:
 docker network create test-network
 docker network rm test-network
 
-# Verify external database connectivity
-mysql -h 172.17.0.1 -P 3306 -u root -p
-
-mysql -h localhost -P 3306 -u root -p
+# Verify database connectivity (the mysql service publishes port 3306)
+mysql -h 127.0.0.1 -P 3306 -u root -p
 ~~~
 
 **Configuration Verification**

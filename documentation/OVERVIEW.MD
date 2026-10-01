@@ -14,11 +14,10 @@ The system consists of several key components working together to provide real-t
 |-----------------------|----------------------------|--------------------------------------------------------|-------------------------------------------|
 | Source Database       | MySQL                      | Operational data store with CDC-enabled binary logging | `streaming_etl_db` database                |
 | Change Data Capture   | Debezium                   | Captures MySQL changes and publishes to Kafka topics   | `streaming_ETL_pipeline_MySQL-connector`  |
-| Message Broker        | Apache Kafka               | Distributed streaming platform for event processing    | Ports `9092`, `29092`                      |
-| Coordination          | Apache ZooKeeper           | Cluster coordination for Kafka                         | Port `2181`                                |
+| Message Broker        | Apache Kafka (KRaft mode)  | Distributed streaming platform for event processing    | Ports `9092`, `29092`                      |
 | Schema Management     | Confluent Schema Registry  | Avro/JSON schema management for Kafka                  | Port `8081`                                |
 | Stream Processing     | ksqlDB                     | Real-time stream processing and enrichment             | Port `8088`                                |
-| Analytics Database    | ClickHouse                 | Columnar OLAP database for analytical queries          | External connection                        |
+| Analytics Database    | ClickHouse                 | Columnar OLAP database for analytical queries          | Ports `8123`, `9000`                       |
 | Data Transformation   | dbt (Optional)             | SQL-based data modeling and transformation             | Post-processing layer                      |
 
 ## Deployment Architecture
@@ -31,4 +30,4 @@ The entire system is containerized and orchestrated using Docker Compose, with m
 | `terminate.sh`        | Cleanly stops all services and removes containers   | Root directory  |
 | `docker-compose.yaml` | Defines service orchestration and networking        | Root directory  |
 
-The system uses a dedicated Docker network (`streaming_etl_pipeline_mysql_webproxy`) to enable inter-service communication while exposing specific ports for external access.
+The system uses a dedicated Docker network (`streaming_etl_webproxy`) to enable inter-service communication while exposing specific ports for external access.

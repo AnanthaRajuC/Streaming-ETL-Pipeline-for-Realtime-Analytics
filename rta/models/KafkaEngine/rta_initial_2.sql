@@ -4,7 +4,7 @@ with abc as
 (select
     CITY,
     COUNT(*) as occurrences
-    from  KafkaEngine.person_address_enriched
+    from {{ source('KafkaEngine', 'person_address_enriched') }}
     GROUP BY CITY
     ORDER BY occurrences DESC
     LIMIT 5

@@ -17,13 +17,12 @@ The system is built using a carefully selected stack of technologies organized i
 
 ### Streaming Platform Technologies
 
-The streaming backbone consists of three core Apache Kafka ecosystem components that handle distributed event streaming, coordination, and schema management.
+The streaming backbone consists of two core Apache Kafka ecosystem components that handle distributed event streaming and schema management.
 
 | Technology               | Version/Distribution   | Role                                                                 |
 |--------------------------|------------------------|----------------------------------------------------------------------|
-| Apache Kafka             | Open Source            | Distributed event streaming platform serving as the central message broker |
-| Apache ZooKeeper         | Open Source            | Centralized coordination service for Kafka cluster management and configuration |
-| Confluent Schema Registry| Confluent Distribution | Schema management service for Avro, JSON Schema, and Protobuf schemas |
+| Apache Kafka             | Confluent `cp-kafka:7.9.0` | Distributed event streaming platform serving as the central message broker |
+| Confluent Schema Registry| `cp-schema-registry:7.9.0` | Schema management service for Avro, JSON Schema, and Protobuf schemas |
 
 **Kafka Configuration**
 
@@ -31,11 +30,11 @@ The streaming backbone consists of three core Apache Kafka ecosystem components 
 - Topics automatically created for database table changes`
 - Supports both producer and consumer applications
 
-**ZooKeeper Role**
+**KRaft Mode**
 
-- Maintains Kafka cluster metadata and configuration
-- Handles leader election for Kafka partitions
-- Provides distributed synchronization services
+- Kafka runs as a combined broker and controller, with no ZooKeeper
+- Cluster metadata is kept in Kafka's own internal metadata log
+- All image versions are pinned in `docker-compose.yaml`
 
 **Schema Registry Integration**
 
@@ -108,7 +107,7 @@ The entire system runs in a containerized environment using Docker and Docker Co
 **Service Deployment Structure**
 
 - All services deployed as Docker containers
-- Network: `streaming_etl_pipeline_mysql_webproxy`
+- Network: `streaming_etl_webproxy`
 - Persistent volumes for data storage
 - Port mapping for external access
 
