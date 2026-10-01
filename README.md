@@ -55,7 +55,8 @@ Requires Docker with the Compose v2 plugin. Everything, including MySQL and Clic
 # 2. Generate a stream of new rows in MySQL (needs: pip install mysql-connector-python faker)
 cd data && python fake-events.py
 
-# 3. Watch them arrive in ClickHouse, one current row per person
+# 3. Watch them arrive on the live Grafana dashboard: http://localhost:3000
+#    or query ClickHouse directly, one current row per person
 docker exec -it clickhouse clickhouse-client --password root \
   -q "SELECT CITY, count() FROM KafkaEngine.person_address_enriched FINAL GROUP BY CITY ORDER BY 2 DESC LIMIT 5"
 
@@ -63,7 +64,7 @@ docker exec -it clickhouse clickhouse-client --password root \
 ./terminate.sh
 ~~~
 
-Inserts, updates and deletes in MySQL all reach ClickHouse. Changing an address or its coordinates updates every person living there.
+Inserts, updates and deletes in MySQL all reach ClickHouse and the [Grafana dashboard](documentation/GRAFANA.MD) within seconds. Changing an address or its coordinates updates every person living there.
 
 ## Testing
 
@@ -72,6 +73,7 @@ Inserts, updates and deletes in MySQL all reach ClickHouse. Changing an address 
 ~~~bash
 ./deploy.sh
 tests/smoke-test.sh          # changes the sample rows; ./terminate.sh && ./deploy.sh to reset
+tests/dashboard-check.sh     # every Grafana panel query returns data
 (cd rta && dbt build --profiles-dir .)
 ./terminate.sh
 ~~~
@@ -80,8 +82,8 @@ tests/smoke-test.sh          # changes the sample rows; ./terminate.sh && ./depl
 
 | Job                 | What it checks                                                                          |
 |---------------------|-----------------------------------------------------------------------------------------|
-| Lint                | `shellcheck` on the shell scripts, `docker compose config`, `debeziumConfig.json` is valid JSON, `fake-events.py` compiles |
-| End-to-end pipeline | `./deploy.sh`, then `tests/smoke-test.sh`, then `dbt build`; prints container logs if any step fails |
+| Lint                | `shellcheck` on the shell scripts, `docker compose config`, the Debezium config and Grafana dashboard are valid JSON, `fake-events.py` compiles |
+| End-to-end pipeline | `./deploy.sh`, then `tests/smoke-test.sh`, `tests/dashboard-check.sh` and `dbt build`; prints container logs if any step fails |
 
 ## Details
 
@@ -93,7 +95,8 @@ tests/smoke-test.sh          # changes the sample rows; ./terminate.sh && ./depl
 - [03 - Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
 - [04 - ksqlDB Stream Processing](documentation/KSQLDB_STREAMS.MD) 
 - [05 - ClickHouse](documentation/ClickHouse.MD) 
-- [06 - dbt (Optional)](documentation/DBT.MD) 
+- [06 - Grafana Dashboard](documentation/GRAFANA.MD) 
+- [07 - dbt (Optional)](documentation/DBT.MD) 
 - [Reference](documentation/REFERENCE.MD)  
 
 

@@ -15,6 +15,7 @@ select
     ZIPCODE,
     LAT,
     LNG,
+    CREATED_AT,
     UPDATED_AT
 from {{ source('KafkaEngine', 'person_address_enriched') }} FINAL
 where IS_DELETED = 0

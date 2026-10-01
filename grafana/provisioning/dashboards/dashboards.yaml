@@ -1,0 +1,11 @@
+# Loads every dashboard JSON file in /var/lib/grafana/dashboards.
+apiVersion: 1
+
+providers:
+  - name: streaming-etl
+    folder: ""
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards

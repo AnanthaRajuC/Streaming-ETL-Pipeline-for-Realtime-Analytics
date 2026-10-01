@@ -22,13 +22,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Shell scripts (shellcheck)
-        run: shellcheck deploy.sh terminate.sh debezium/register-connector.sh ksqldb/run-pipeline.sh tests/smoke-test.sh
+        run: shellcheck deploy.sh terminate.sh debezium/register-connector.sh ksqldb/run-pipeline.sh tests/smoke-test.sh tests/dashboard-check.sh
 
       - name: Docker Compose file
         run: docker compose config --quiet
 
-      - name: Debezium connector config is valid JSON
-        run: jq empty debeziumConfig.json
+      - name: JSON files are valid
+        run: jq empty debeziumConfig.json grafana/dashboards/*.json
 
       - name: Event generator compiles
         run: python3 -m py_compile data/fake-events.py
@@ -56,6 +56,9 @@ jobs:
 
       - name: Smoke test (MySQL -> ClickHouse)
         run: tests/smoke-test.sh
+
+      - name: Grafana dashboard (every panel query)
+        run: tests/dashboard-check.sh
 
       - name: dbt build
         working-directory: rta
