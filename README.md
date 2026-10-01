@@ -46,21 +46,22 @@ In this project we will create a simple streaming data pipeline to continuously 
 Requires Docker with the Compose v2 plugin. Everything, including MySQL and ClickHouse, runs in containers.
 
 ~~~bash
-# 1. Start every service and wait until they are healthy (MySQL is created with schema, CDC user and sample data)
+# 1. Start the whole pipeline. This creates the MySQL schema and sample data, registers the
+#    Debezium connector, creates the ksqlDB joins and the ClickHouse tables, and waits until it is all running.
 ./deploy.sh
 
-# 2. Register the Debezium MySQL connector
-curl -i -X POST -H "Content-Type:application/json" localhost:8083/connectors/ -d @debeziumConfig.json
+# 2. Generate a stream of new rows in MySQL (needs: pip install mysql-connector-python faker)
+cd data && python fake-events.py
 
-# 3. Create the ksqlDB streams        -> documentation/KSQLDB_STREAMS.MD
-docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+# 3. Watch them arrive in ClickHouse, one current row per person
+docker exec -it clickhouse clickhouse-client --password root \
+  -q "SELECT CITY, count() FROM KafkaEngine.person_address_enriched FINAL GROUP BY CITY ORDER BY 2 DESC LIMIT 5"
 
-# 4. Create the ClickHouse tables     -> documentation/ClickHouse.MD
-docker exec -it clickhouse clickhouse-client --password root
-
-# 5. Tear everything down (add -v to `docker compose down` to also drop the data)
+# 4. Tear everything down, including the data
 ./terminate.sh
 ~~~
+
+Inserts, updates and deletes in MySQL all reach ClickHouse. Changing an address or its coordinates updates every person living there.
 
 ## Details
 
@@ -70,8 +71,7 @@ docker exec -it clickhouse clickhouse-client --password root
 - [01 - Project Setup](documentation/PROJECT_SETUP.MD) 
 - [02 - Initial MySQL Preparation](documentation/INITIAL_MYSQL_PREPARATION.MD)  
 - [03 - Debezium CDC Configuration](documentation/DEBEZIUM_CDC_CONFIGURATION.MD) 
-- [04 - ksqlDB Streams](documentation/KSQLDB_STREAMS.MD) 
-- [ksqlDB Tables(Optional)](documentation/KSQLDB_TABLES.MD) 
+- [04 - ksqlDB Stream Processing](documentation/KSQLDB_STREAMS.MD) 
 - [05 - ClickHouse](documentation/ClickHouse.MD) 
 - [06 - dbt (Optional)](documentation/DBT.MD) 
 - [Reference](documentation/REFERENCE.MD)  

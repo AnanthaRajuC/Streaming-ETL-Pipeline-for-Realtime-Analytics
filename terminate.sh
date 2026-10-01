@@ -4,10 +4,10 @@ cd "$(dirname "$0")"
 
 echo "Stopping Streaming ETL"
 
-docker compose ps --format 'table {{.Name}}\t{{.Image}}\t{{.Status}}'
+docker compose ps -a --format 'table {{.Name}}\t{{.Image}}\t{{.Status}}'
 
-# Stops and removes every container and the network. Add -v to also
-# drop volumes, so MySQL and ClickHouse re-run their init scripts next time.
-docker compose down
+# Stops and removes every container, the network and the containers'
+# data volumes. The next ./deploy.sh starts from a clean slate.
+docker compose down -v
 
 echo "DONE"

@@ -12,7 +12,7 @@ This section covers the setup and configuration of the MySQL source database tha
 > `mysql/init/00_schema.sql` creates the tables, `mysql/init/01_debezium_user.sql` creates the CDC user,
 > and the three `data/*.sql` files load the sample rows. Binary logging (`--log-bin`, `--binlog-format=ROW`)
 > is set on the container's command line. The SQL below is kept for reference and for running against
-> your own MySQL server. To re-run the init scripts, remove the data volume with `docker compose down -v`.
+> your own MySQL server. `./terminate.sh` deletes the data, so the next `./deploy.sh` starts from these scripts again.
 
 ### Schema and Database Configuration
 
