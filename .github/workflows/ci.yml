@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shell scripts (shellcheck)
+        run: shellcheck deploy.sh terminate.sh debezium/register-connector.sh ksqldb/run-pipeline.sh tests/smoke-test.sh
+
+      - name: Docker Compose file
+        run: docker compose config --quiet
+
+      - name: Debezium connector config is valid JSON
+        run: jq empty debeziumConfig.json
+
+      - name: Event generator compiles
+        run: python3 -m py_compile data/fake-events.py
+
+  e2e:
+    name: End-to-end pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dbt
+        run: pip install "dbt-core==1.10.*" "dbt-clickhouse==1.10.*"
+
+      - name: Pull images
+        run: docker compose pull --quiet
+
+      - name: Deploy pipeline
+        run: ./deploy.sh
+
+      - name: Smoke test (MySQL -> ClickHouse)
+        run: tests/smoke-test.sh
+
+      - name: dbt build
+        working-directory: rta
+        run: dbt build --profiles-dir .
+
+      - name: Container logs
+        if: failure()
+        run: |
+          docker compose ps -a
+          docker compose logs --no-color --tail=200
+
+      - name: Tear down
+        if: always()
+        run: ./terminate.sh

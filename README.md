@@ -10,6 +10,8 @@
 
 In this project we will create a simple streaming data pipeline to continuously capture the changes in a MySQL database and replicate them in near real-time into ClickHouse. 
 
+[![CI](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/actions/workflows/ci.yml)
+
 <div align="center">
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CODE_OF_CONDUCT.md) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Checkout+this+recipe+for+streaming+ETL&url=https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL&hashtags=DataEngineering) [![Twitter Follow](https://img.shields.io/twitter/follow/anantharajuc?label=follow%20me&style=social)](https://twitter.com/anantharajuc)
@@ -62,6 +64,24 @@ docker exec -it clickhouse clickhouse-client --password root \
 ~~~
 
 Inserts, updates and deletes in MySQL all reach ClickHouse. Changing an address or its coordinates updates every person living there.
+
+## Testing
+
+`tests/smoke-test.sh` checks a running pipeline end to end. It waits for the sample data in ClickHouse, then makes an update, an address change, a delete and an insert in MySQL, and waits for each to show up correctly in ClickHouse.
+
+~~~bash
+./deploy.sh
+tests/smoke-test.sh          # changes the sample rows; ./terminate.sh && ./deploy.sh to reset
+(cd rta && dbt build --profiles-dir .)
+./terminate.sh
+~~~
+
+[CI](.github/workflows/ci.yml) runs on every push to `main` and every pull request:
+
+| Job                 | What it checks                                                                          |
+|---------------------|-----------------------------------------------------------------------------------------|
+| Lint                | `shellcheck` on the shell scripts, `docker compose config`, `debeziumConfig.json` is valid JSON, `fake-events.py` compiles |
+| End-to-end pipeline | `./deploy.sh`, then `tests/smoke-test.sh`, then `dbt build`; prints container logs if any step fails |
 
 ## Details
 
