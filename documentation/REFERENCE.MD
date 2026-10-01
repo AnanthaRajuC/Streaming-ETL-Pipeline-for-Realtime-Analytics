@@ -10,15 +10,9 @@ Checkout additional Docker and DockerHub commands here, [https://github.com/Anan
 
 |                  Command          |                                             Description                                     |
 |-----------------------------------|---------------------------------------------------------------------------------------------| 
-|`docker-compose config`            | Check the build-file for syntax-errors	                                                  |
-|`docker-compose up`                | Start the containers                                                                        |
-|`docker-compose --compatibility up`| Start the containers using compatibility mode to set Memory and CPU Limits. Using --compatibility mode will attempt to convert that API v3 way of setting resource limits back into v2 compatible properties.                  |
-|`docker-compose down`	            | Stop the containers, remove them from Docker and remove the connected networks from it.     |
-
-|                  Command          |      Description                    |
-|-----------------------------------|-------------------------------------| 
-|`docker stop kafka-ui`             | Stop kafka-ui	                      |
-|`docker rm kafka-ui`               | remove kafka-ui                     |
+|`docker compose config`            | Check the build-file for syntax-errors	                                                  |
+|`docker compose up -d --wait`      | Start the containers                                                                        |
+|`docker compose down`	            | Stop the containers, remove them from Docker and remove the connected networks from it.     |
 
 |                  Command                                                |       Description                                     |
 |-------------------------------------------------------------------------|-------------------------------------------------------| 
@@ -61,27 +55,24 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
   "name": "streaming_ETL_pipeline_MySQL-connector",
   "config": {
     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
-    "database.hostname": "172.17.0.1",
+    "database.hostname": "mysql",
     "database.port": "3306",
     "database.user": "debezium",
     "database.password": "Debezium@123#",
-    "database.server.name": "mysql",
-	"database.server.id": "223344",
+    "database.server.id": "223344",
     "database.include.list": "streaming_etl_db",
-	"database.allowPublicKeyRetrieval": true,
-	"database.history.kafka.bootstrap.servers": "kafka:9092",
-	"database.history.kafka.topic": "mysql-streaming_etl_db-person",
-	"time.precision.mode": "connect",
-    "include.schema.changes": false,
-    "transforms": "unwrap,dropTopicPrefix",
-	"transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-	"transforms.dropTopicPrefix.type":"org.apache.kafka.connect.transforms.RegexRouter",
-	"transforms.dropTopicPrefix.regex":"asgard.demo.(.*)",
-	"transforms.dropTopicPrefix.replacement":"$1",
-	"key.converter":"org.apache.kafka.connect.json.JsonConverter",
-	"key.converter.schemas.enable": "false",
-	"value.converter":"org.apache.kafka.connect.json.JsonConverter",
-	"value.converter.schemas.enable": "false"
+    "database.allowPublicKeyRetrieval": "true",
+    "topic.prefix": "dbserver",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+    "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
+    "include.schema.changes": "false",
+    "time.precision.mode": "connect",
+    "transforms": "unwrap",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false"
   }
 }'
 ~~~

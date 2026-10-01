@@ -8,6 +8,12 @@ This section covers the setup and configuration of the MySQL source database tha
 	</ul>
 </details>
 
+> **Automated in Docker Compose.** The `mysql` service runs everything on this page on its first start:
+> `mysql/init/00_schema.sql` creates the tables, `mysql/init/01_debezium_user.sql` creates the CDC user,
+> and the three `data/*.sql` files load the sample rows. Binary logging (`--log-bin`, `--binlog-format=ROW`)
+> is set on the container's command line. The SQL below is kept for reference and for running against
+> your own MySQL server. To re-run the init scripts, remove the data volume with `docker compose down -v`.
+
 ### Schema and Database Configuration
 
 The initial setup creates the dedicated schema and verifies MySQL version compatibility:
@@ -34,10 +40,10 @@ The pipeline requires a dedicated MySQL user with specific privileges to enable 
 
 ~~~sql
 -- Create user 
-CREATE USER 'debezium' IDENTIFIED WITH mysql_native_password BY 'Debezium@123#';
+CREATE USER 'debezium'@'%' IDENTIFIED WITH mysql_native_password BY 'Debezium@123#';
 
 -- Grant privileges to user
-GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium';
+GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium'@'%';
 
 -- Reload the grant tables in the mysql database enabling the changes to take effect without reloading or restarting mysql service
 FLUSH PRIVILEGES;
@@ -174,7 +180,7 @@ The prepared database connects to the Debezium MySQL connector through specific 
 
 | Parameter               | Value             | Purpose                         |
 |-------------------------|-------------------|----------------------------------|
-| `database.hostname`     | 172.17.0.1        | MySQL host address              |
+| `database.hostname`     | mysql             | MySQL service on the Compose network |
 | `database.port`         | 3306              | MySQL port                      |
 | `database.user`         | debezium          | User created in preparation     |
 | `database.password`     | Debezium@123#     | User password                   |

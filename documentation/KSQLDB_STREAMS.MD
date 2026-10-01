@@ -134,7 +134,7 @@ EMIT CHANGES;
 ~~~sql
 CREATE SINK CONNECTOR SINK_PERSON_ADDRESS_ENRICHED_STREAM WITH (
     'connector.class'                     = 'io.confluent.connect.jdbc.JdbcSinkConnector',
-    'connection.url'                      = 'jdbc:mysql://172.17.0.1:3306/',
+    'connection.url'                      = 'jdbc:mysql://mysql:3306/',
     'connection.user'                     = 'debezium',
     'connection.password'                 = 'Debezium@123#',
     'topics'                              = 'PERSON_ADDRESS_ENRICHED_STREAM',

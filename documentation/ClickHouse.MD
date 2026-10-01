@@ -8,10 +8,18 @@ This document describes the configuration and setup of ClickHouse as the analyti
 
 **Database Configuration** 
 
+ClickHouse runs as the `clickhouse` service in `docker-compose.yaml` (HTTP on `localhost:8123`, native protocol on `localhost:9000`, user `default`, password `root`). Its init script `clickhouse/init/00_database.sql` creates the `KafkaEngine` database on first start. Open a client with:
+
+~~~shell
+docker exec -it clickhouse clickhouse-client --password root
+~~~
+
+Because ClickHouse is on the same Docker network as Kafka, the Kafka engine tables below use the internal listener `kafka:9092`.
+
 ClickHouse uses a dedicated database called KafkaEngine to organize all streaming-related tables and views:
 
 ~~~sql
-Create database KafkaEngine;
+Create database IF NOT EXISTS KafkaEngine;
 Use KafkaEngine;
 show tables;
 ~~~
@@ -38,7 +46,7 @@ CREATE TABLE KafkaEngine.person_address_enriched_queue (
   CITY String
 )
 ENGINE = Kafka
-SETTINGS kafka_broker_list = 'localhost:29092',
+SETTINGS kafka_broker_list = 'kafka:9092',
        kafka_topic_list = 'person_address_enriched',
        kafka_group_name = 'streaming_etl_db_consumer_group1',
        kafka_format = 'JSONEachRow',
@@ -91,7 +99,7 @@ CREATE TABLE geo_queue (
     lng String
 )
 ENGINE = Kafka
-SETTINGS kafka_broker_list = 'localhost:29092',
+SETTINGS kafka_broker_list = 'kafka:9092',
        kafka_topic_list = 'dbserver.streaming_etl_db.geo',
        kafka_group_name = 'streaming_etl_db_consumer_group1',
        kafka_format = 'JSONEachRow',
@@ -113,59 +121,3 @@ SELECT
 *
 FROM KafkaEngine.geo;
 ~~~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

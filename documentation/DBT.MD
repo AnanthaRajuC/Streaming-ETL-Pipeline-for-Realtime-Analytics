@@ -6,6 +6,20 @@ This document covers the optional integration of dbt (data build tool) with the 
 
 dbt operates as an additional analytics layer on top of the existing streaming ETL pipeline, transforming data that has already been loaded into ClickHouse through the Kafka streaming process.
 
+## Models and Tests
+
+The models in `rta/models/KafkaEngine/` read from the `KafkaEngine.person_address_enriched` MergeTree table through `{{ source('KafkaEngine', 'person_address_enriched') }}`. They never read the `person_address_enriched_queue` Kafka engine table: a `SELECT` on a Kafka engine table consumes the messages, so the materialized view would miss them (ClickHouse blocks such queries by default).
+
+`schema.yml` declares the source and adds `not_null` and `unique` tests, which `dbt build` runs after the models.
+
+Run dbt from the `rta` folder against the ClickHouse container:
+
+~~~bash
+pip install dbt-clickhouse
+cd rta
+dbt build --profiles-dir .
+~~~
+
 ## Commands and Operations
 
 **Core dbt Commands**

@@ -1,16 +1,29 @@
 #!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")"
+
 echo "Streaming ETL"
 
-docker-compose up -d
+# Start every service and block until the ones with healthchecks
+# (MySQL, Kafka, Debezium Connect, ksqlDB, ClickHouse) report healthy.
+docker compose up -d --wait
 
-sleep 30s
+docker compose ps --format 'table {{.Name}}\t{{.Image}}\t{{.Status}}'
 
-docker run --name=kafka-ui --network=streaming_etl_pipeline_mysql_webproxy -p 9099:8080 -e KAFKA_CLUSTERS_0_NAME=local -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 -d provectuslabs/kafka-ui:latest
+cat <<'MSG'
 
-sleep 30s
+All services are up.
 
-docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}'
+  Kafka UI     http://localhost:9099
+  Debezium UI  http://localhost:8080
+  Connect API  http://localhost:8083
+  ksqlDB       http://localhost:8088
+  ClickHouse   http://localhost:8123  (user: default, password: root)
+  MySQL        localhost:3306          (user: admin, password: password)
 
-docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
-
-echo "DONE"
+Next steps:
+  Register the Debezium connector:
+    curl -i -X POST -H "Content-Type:application/json" localhost:8083/connectors/ -d @debeziumConfig.json
+  Open the ksqlDB CLI:
+    docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+MSG

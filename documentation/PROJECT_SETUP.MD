@@ -4,7 +4,7 @@ This document covers the deployment of the containerized streaming ETL pipeline 
 
 ## Deployment Architecture
 
-The streaming ETL pipeline deploys as a coordinated set of containerized services managed through Docker Compose. The deployment creates a custom bridge network and orchestrates the startup sequence of dependent services.
+The whole pipeline (MySQL, Kafka, Debezium, Schema Registry, ksqlDB, ClickHouse and both web UIs) is defined in `docker-compose.yaml`. Every image is pinned to a tested version, Kafka runs in KRaft mode (no ZooKeeper), and the services with healthchecks (MySQL, Kafka, Debezium Connect, ksqlDB, ClickHouse) gate the services that depend on them.
 
 ## Automated Deployment
 
@@ -13,34 +13,20 @@ The system provides the `deploy.sh` script for automated environment deployment 
 **Deploy Script Execution**
 
 ~~~bash
-sh deploy.sh
+./deploy.sh
 ~~~
 
 ![deploy](images/deploy.png)
 
 The automated deployment sequence performs the following operations:
 
-| Step | Command                                      | Purpose                                 | Wait Time    |
-|------|----------------------------------------------|-----------------------------------------|--------------|
-| 1    | `docker-compose up -d`                       | Start core services in detached mode    | 30 seconds   |
-| 2    | `docker run --name=kafka-ui ...`             | Deploy Kafka UI container               | 30 seconds   |
-| 3    | `docker ps --format 'table ...'`             | Display running containers              | None         |
-| 4    | `docker exec -it ksqldb-cli ksql ...`        | Launch interactive ksqlDB CLI           | None         |
+| Step | Command                               | Purpose                                                   |
+|------|---------------------------------------|-----------------------------------------------------------|
+| 1    | `docker compose up -d --wait`         | Start all services and wait until they report healthy     |
+| 2    | `docker compose ps`                   | Display running containers                                |
+| 3    | -                                     | Print the service URLs and the next commands to run       |
 
-We will use docker compose for a fast deployment of the demo. The shell script **deploy.sh** is designed to initialize the environment when triggered using **sh deploy.sh**. 
-
-## Kafka UI Container Deployment
-
-The `deploy.sh` script deploys Kafka UI as a separate container with specific network and environment configuration:
-
-~~~bash
-docker run --name=kafka-ui \
-  --network=streaming_etl_pipeline_mysql_webproxy \
-  -p 9099:8080 \
-  -e KAFKA_CLUSTERS_0_NAME=local \
-  -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 \
-  -d provectuslabs/kafka-ui:latest
-~~~
+On the first start, MySQL creates the `streaming_etl_db` schema, the `debezium` CDC user and the sample data, and ClickHouse creates the `KafkaEngine` database. See [Initial MySQL Preparation](INITIAL_MYSQL_PREPARATION.MD).
 
 --- 
 
@@ -66,51 +52,37 @@ docker compose -f docker-compose.yaml pull
 
 ## Service Startup
 
-Start the core services using Docker Compose:
+Start the services using Docker Compose:
 
 ~~~shell
-docker compose -f docker-compose.yaml up
+docker compose -f docker-compose.yaml up -d --wait
 ~~~
 
-Expected output shows the creation of the `streaming_etl_pipeline_mysql_webproxy` network and sequential container startup:
+Expected output shows the creation of the `streaming_etl_webproxy` network and the containers becoming healthy:
 
 ~~~shell
-Creating network "streaming_etl_pipeline_mysql_webproxy" with driver "bridge"
-Creating zookeeper ... done
-Creating kafka     ... done
-Creating debezium           ... done
-Creating cp-schema-registry ... done
-Creating kafka-connect-01   ... done
-Creating ksqldb-server      ... done
-Creating ksqldb-cli         ... done
-~~~
-
-## Kafka UI Manual Deployment
-
-Optionally, start [Kafka UI](https://github.com/provectus/kafka-ui), an open-source web UI for Apache Kafka Management
-
-~~~shell
-docker run --name=kafka-ui \
-  --network=streaming_etl_pipeline_mysql_webproxy \
-  -p 9099:8080 \
-  -e KAFKA_CLUSTERS_0_NAME=local \
-  -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 \
-  -d provectuslabs/kafka-ui:latest
+ Network streaming_etl_webproxy  Created
+ Container mysql                 Healthy
+ Container kafka                 Healthy
+ Container clickhouse            Healthy
+ Container debezium              Healthy
+ Container ksqldb-server         Healthy
+ ...
 ~~~
 
 ## Service Verification
 
 **Container Status Check**
 
-Verify all containers are running with Up status:
+Verify all containers are running:
 
-`docker ps`
+`docker compose ps`
 
 ![Docker Compose Up](images/09-docker-ps.png) 
 
-**Important**: All components must show **"Up"** status. If any containers show **"Exit"** status, re-issue the `docker-compose up -d` command.
+**Important**: All components must show **"Up"** status. If any container exited, check its logs with `docker compose logs <service>` and re-run `docker compose up -d --wait`.
 
-URL to access Kakfka-UI console: **http://localhost:9099**  
+URL to access Kafka-UI console: **http://localhost:9099**  
 
 ![Kafka UI](images/04-kafka-topics-before-debezium.png) 
 
@@ -126,11 +98,14 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 ## Service Access Points
 
-| Service       | URL                      | Container       | Purpose                   |
+| Service       | URL / Address            | Container        | Purpose                    |
 |---------------|--------------------------|------------------|----------------------------|
 | Debezium UI   | http://localhost:8080    | `debezium-ui`    | Connector management       |
 | Kafka UI      | http://localhost:9099    | `kafka-ui`       | Topic monitoring           |
+| Connect API   | http://localhost:8083    | `debezium`       | Debezium connector REST API|
 | ksqlDB Server | http://localhost:8088    | `ksqldb-server`  | Stream processing API      |
+| ClickHouse    | http://localhost:8123    | `clickhouse`     | Analytics database (`default` / `root`) |
+| MySQL         | localhost:3306           | `mysql`          | Source database (`admin` / `password`)  |
 
 --- 
 
@@ -138,51 +113,24 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 **Automated Teardown**
 
-Use the `terminate.sh` script for complete environment cleanup:
+Use the `terminate.sh` script to stop and remove every container and the network:
 
 ~~~bash
-sh terminate.sh
+./terminate.sh
 ~~~
-
-The teardown process includes diagnostic output and systematic container removal.
 
 ![terminate](images/terminate.png)
 
 **Manual Teardown Process**
 
-Alternatively, you may choose to follow the steps listed below, depending on your preference.
-
-**1. Stop and remove Kafka UI container:**
-
-~~~shell
-docker stop kafka-ui
-
-docker rm kafka-ui
-~~~
-
-**2. Stop and remove Docker Compose services:**
-
 ~~~shell
 docker compose -f docker-compose.yaml down
 ~~~
 
-Expected output shows systematic container and network removal:
+Add `-v` to also delete the MySQL and ClickHouse data, so their init scripts run again on the next start:
 
 ~~~shell
-Stopping ksqldb-cli       ... done
-Stopping ksqldb-server    ... done
-Stopping kafka-connect-01 ... done
-Stopping debezium         ... done
-Stopping kafka            ... done
-Stopping zookeeper        ... done
-Removing ksqldb-cli         ... done
-Removing ksqldb-server      ... done
-Removing kafka-connect-01   ... done
-Removing cp-schema-registry ... done
-Removing debezium           ... done
-Removing kafka              ... done
-Removing zookeeper          ... done
-Removing network streaming_etl_pipeline_mysql_webproxy
+docker compose -f docker-compose.yaml down -v
 ~~~
 
 **State Preservation Option**
@@ -190,32 +138,36 @@ Removing network streaming_etl_pipeline_mysql_webproxy
 To preserve container state without removing containers, use:
 
 ~~~bash
-docker-compose stop
+docker compose stop
 ~~~
 
 ## Network and Port Configuration
 
 **Docker Network**
 
-The deployment creates a custom bridge network named `streaming_etl_pipeline_mysql_webproxy` that enables inter-service communication using container hostnames.
+The deployment creates a custom bridge network named `streaming_etl_webproxy` that enables inter-service communication using container hostnames (`mysql`, `kafka`, `debezium`, `ksqldb-server`, `clickhouse`, ...).
 
 **Port Mapping Configuration**
 
 | Service         | Internal Port | External Port | Protocol         |
-|------------------|----------------|----------------|------------------|
-| kafka            | 9092           | 9092           | PLAINTEXT        |
-| kafka            | 9092           | 29092          | PLAINTEXT_HOST   |
-| debezium         | 8083           | 8083           | HTTP             |
-| schema-registry  | 8081           | 8081           | HTTP             |
-| ksqldb-server    | 8088           | 8088           | HTTP             |
-| debezium-ui      | 8080           | 8080           | HTTP             |
-| kafka-ui         | 8080           | 9099           | HTTP             |
+|-----------------|---------------|---------------|------------------|
+| mysql           | 3306          | 3306          | MySQL            |
+| kafka           | 9092          | 9092          | PLAINTEXT (Docker network clients) |
+| kafka           | 29092         | 29092         | PLAINTEXT_HOST (clients on the host, `localhost:29092`) |
+| debezium        | 8083          | 8083          | HTTP             |
+| schema-registry | 8081          | 8081          | HTTP             |
+| ksqldb-server   | 8088          | 8088          | HTTP             |
+| clickhouse      | 8123 / 9000   | 8123 / 9000   | HTTP / native    |
+| debezium-ui     | 8080          | 8080          | HTTP             |
+| kafka-ui        | 8080          | 9099          | HTTP             |
 
 ## Environment Variable Configuration
 
 Key environment variables for service configuration:
 
-- **Kafka**: `KAFKA_ADVERTISED_LISTENERS`, `KAFKA_ZOOKEEPER_CONNECT`
-- **Debezium**: `BOOTSTRAP_SERVERS`, `CONFIG_STORAGE_TOPIC`, `OFFSET_STORAGE_TOPIC`
+- **MySQL**: `database.env` (`MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`), `MYSQL_DATABASE`
+- **Kafka**: `KAFKA_PROCESS_ROLES`, `KAFKA_CONTROLLER_QUORUM_VOTERS`, `KAFKA_LISTENERS`, `KAFKA_ADVERTISED_LISTENERS`
+- **Debezium**: `BOOTSTRAP_SERVERS`, `CONFIG_STORAGE_TOPIC`, `OFFSET_STORAGE_TOPIC`, `STATUS_STORAGE_TOPIC`
 - **ksqlDB**: `KSQL_BOOTSTRAP_SERVERS`, `KSQL_LISTENERS`
-- **Schema Registry**: `SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL`
+- **Schema Registry**: `SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS`
+- **ClickHouse**: `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`

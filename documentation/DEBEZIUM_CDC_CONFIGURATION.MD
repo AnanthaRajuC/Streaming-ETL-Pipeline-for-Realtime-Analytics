@@ -10,11 +10,11 @@ The Debezium MySQL connector configuration consists of several key parameter cat
 
 | Parameter              | Value          | Purpose                                       |
 |------------------------|----------------|-----------------------------------------------|
-| `database.hostname`    | 172.17.0.1     | MySQL server host address                     |
+| `database.hostname`    | mysql          | MySQL service name on the Compose network     |
 | `database.port`        | 3306           | MySQL server port                             |
 | `database.user`        | debezium       | Database user with replication privileges     |
 | `database.password`    | Debezium@123#  | Database user password                        |
-| `database.server.id`   | 223344         | Unique MySQL server identifier                |
+| `database.server.id`   | 223344         | Replica ID Debezium uses; must differ from MySQL's `server-id` (1) |
 
 **Data Capture Parameters**
 
@@ -22,7 +22,6 @@ The Debezium MySQL connector configuration consists of several key parameter cat
 |-------------------------|-------------------|--------------------------------------------------|
 | `database.include.list` | streaming_etl_db  | Databases to monitor for changes                 |
 | `topic.prefix`          | dbserver          | Prefix for generated Kafka topic names           |
-| `database.server.name`  | mysql             | Logical server name for topic naming             |
 
 **Message Format Parameters**
 
@@ -46,27 +45,24 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
   "name": "streaming_ETL_pipeline_MySQL-connector",
   "config": {
     "connector.class": "io.debezium.connector.mysql.MySqlConnector",
-    "database.hostname": "172.17.0.1",
+    "database.hostname": "mysql",
     "database.port": "3306",
     "database.user": "debezium",
     "database.password": "Debezium@123#",
-    "database.server.name": "mysql",
-	  "database.server.id": "223344",
+    "database.server.id": "223344",
     "database.include.list": "streaming_etl_db",
-	  "database.allowPublicKeyRetrieval": true,
-	  "database.history.kafka.bootstrap.servers": "kafka:9092",
-	  "database.history.kafka.topic": "mysql-streaming_etl_db-person",
-    "include.schema.changes": false,
-    "key.converter":"org.apache.kafka.connect.json.JsonConverter",
-	  "key.converter.schemas.enable": "false",
-	  "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+    "database.allowPublicKeyRetrieval": "true",
+    "topic.prefix": "dbserver",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
     "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
-	  "time.precision.mode": "connect",
-	  "topic.prefix": "dbserver",
+    "include.schema.changes": "false",
+    "time.precision.mode": "connect",
     "transforms": "unwrap",
-	  "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-	  "value.converter":"org.apache.kafka.connect.json.JsonConverter",
-	  "value.converter.schemas.enable": "false"
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false"
   }
 }'
 ~~~
@@ -89,18 +85,15 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
         "database.allowPublicKeyRetrieval": "true",
         "database.user": "debezium",
         "database.server.id": "223344",
-        "database.history.kafka.bootstrap.servers": "kafka:9092",
-        "database.history.kafka.topic": "mysql-streaming_etl_db-person",
         "time.precision.mode": "connect",
         "transforms": "unwrap",
-        "database.server.name": "mysql",
         "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
         "database.port": "3306",
         "include.schema.changes": "false",
         "key.converter.schemas.enable": "false",
         "topic.prefix": "dbserver",
         "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
-        "database.hostname": "172.17.0.1",
+        "database.hostname": "mysql",
         "database.password": "Debezium@123#",
         "value.converter.schemas.enable": "false",
         "name": "streaming_ETL_pipeline_MySQL-connector",
@@ -179,7 +172,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 #### Client Connecting from the Same Docker Network
 
 ~~~shell
-docker-compose exec kafka bash -c "kafka-topics --list --bootstrap-server localhost:9092"
+docker compose exec kafka kafka-topics --list --bootstrap-server kafka:9092
 ~~~
 
 ![Client Connect from Same Docker Network](images/client_connect_same_docker_network.png) 
