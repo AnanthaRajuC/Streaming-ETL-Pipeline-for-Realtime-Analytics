@@ -9,12 +9,19 @@ cd "$(dirname "$0")/.."
 
 TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-120}"
 
+set -a
+# shellcheck source=/dev/null
+source .env
+set +a
+
 mysql_exec() {
-  docker compose exec -T mysql mysql -uadmin -ppassword streaming_etl_db -e "$1" 2>/dev/null
+  docker compose exec -T -e MYSQL_PWD="$MYSQL_PASSWORD" mysql \
+    mysql -u"$MYSQL_USER" streaming_etl_db -e "$1" 2>/dev/null
 }
 
 clickhouse_query() {
-  docker compose exec -T clickhouse clickhouse-client --password root -q "$1"
+  docker compose exec -T clickhouse \
+    clickhouse-client --user "$CLICKHOUSE_USER" --password "$CLICKHOUSE_PASSWORD" -q "$1"
 }
 
 # wait_for DESCRIPTION QUERY EXPECTED: poll ClickHouse until QUERY returns

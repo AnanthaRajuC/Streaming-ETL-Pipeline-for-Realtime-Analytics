@@ -1,0 +1,4 @@
+# Event generator (data/fake-events.py)
+faker==40.40.0
+mysql-connector-python==26.7.0
+python-dotenv==1.2.4

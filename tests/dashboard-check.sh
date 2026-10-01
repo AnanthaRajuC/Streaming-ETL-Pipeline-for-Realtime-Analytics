@@ -7,7 +7,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 GRAFANA_URL="${GRAFANA_URL:-http://localhost:3000}"
-AUTH="admin:admin"
+set -a
+# shellcheck source=/dev/null
+source .env
+set +a
+AUTH="$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD"
 DASHBOARD_UID="streaming-etl"
 
 api() {

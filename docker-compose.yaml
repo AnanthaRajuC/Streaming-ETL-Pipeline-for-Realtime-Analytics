@@ -1,5 +1,7 @@
 # Streaming ETL pipeline: MySQL -> Debezium -> Kafka -> ksqlDB -> ClickHouse
 #
+# Credentials come from .env (created from .env.example by ./deploy.sh).
+#
 # Every image is pinned to a tested version so a fresh `docker compose up`
 # keeps working when upstream `latest` tags move. Kafka runs in KRaft mode,
 # so ZooKeeper is no longer needed.
@@ -9,9 +11,12 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql
-    env_file: database.env
     environment:
       MYSQL_DATABASE: streaming_etl_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      MYSQL_USER: ${MYSQL_USER:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      DEBEZIUM_DB_PASSWORD: ${DEBEZIUM_DB_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
     command:
       - --server-id=1
       - --log-bin=mysql-bin
@@ -19,7 +24,7 @@ services:
       - --binlog-row-image=FULL
     volumes:
       - ./mysql/init/00_schema.sql:/docker-entrypoint-initdb.d/00_schema.sql:ro
-      - ./mysql/init/01_debezium_user.sql:/docker-entrypoint-initdb.d/01_debezium_user.sql:ro
+      - ./mysql/init/01_debezium_user.sh:/docker-entrypoint-initdb.d/01_debezium_user.sh:ro
       - ./data/1_geo.sql:/docker-entrypoint-initdb.d/10_geo.sql:ro
       - ./data/2_address.sql:/docker-entrypoint-initdb.d/11_address.sql:ro
       - ./data/3_person.sql:/docker-entrypoint-initdb.d/12_person.sql:ro
@@ -93,6 +98,11 @@ services:
       CONFIG_STORAGE_TOPIC: connect_configs
       OFFSET_STORAGE_TOPIC: connect_offsets
       STATUS_STORAGE_TOPIC: connect_statuses
+      # Lets connector configs use ${env:NAME}, so debeziumConfig.json holds
+      # no password.
+      CONNECT_CONFIG_PROVIDERS: env
+      CONNECT_CONFIG_PROVIDERS_ENV_CLASS: org.apache.kafka.common.config.provider.EnvVarConfigProvider
+      DEBEZIUM_DB_PASSWORD: ${DEBEZIUM_DB_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
       KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
     ports:
@@ -175,8 +185,8 @@ services:
       kafka:
         condition: service_healthy
     environment:
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: root
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     volumes:
       - ./clickhouse/init:/docker-entrypoint-initdb.d:ro
@@ -202,8 +212,11 @@ services:
     environment:
       GF_INSTALL_PLUGINS: grafana-clickhouse-datasource 4.22.0
       GF_PLUGINS_PREINSTALL_DISABLED: "true"
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      # Read by grafana/provisioning/datasources/clickhouse.yaml
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:?run ./deploy.sh or scripts/init-env.sh to create .env}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:?run ./deploy.sh or scripts/init-env.sh to create .env}
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
       GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/streaming-etl.json

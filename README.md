@@ -14,22 +14,22 @@ In this project we will create a simple streaming data pipeline to continuously 
 
 <div align="center">
 
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CODE_OF_CONDUCT.md) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Checkout+this+recipe+for+streaming+ETL&url=https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL&hashtags=DataEngineering) [![Twitter Follow](https://img.shields.io/twitter/follow/anantharajuc?label=follow%20me&style=social)](https://twitter.com/anantharajuc)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CODE_OF_CONDUCT.md) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Checkout+this+recipe+for+streaming+ETL&url=https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics&hashtags=DataEngineering) [![Twitter Follow](https://img.shields.io/twitter/follow/anantharajuc?label=follow%20me&style=social)](https://twitter.com/anantharajuc)
 </div>
 
 <div align="center">
-  <sub>Built with ❤︎ by <a href="https://twitter.com/anantharajuc">Anantha Raju C</a> and <a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/graphs/contributors">contributors</a>
+  <sub>Built with ❤︎ by <a href="https://twitter.com/anantharajuc">Anantha Raju C</a> and <a href="https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/graphs/contributors">contributors</a>
 </div>
 
 </br>
 
 <p align="center">
-	<a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/blob/master/README.md"><strong>Explore the docs »</strong></a>
+	<a href="https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/blob/main/README.md"><strong>Explore the docs »</strong></a>
 	<br />
 	<br />
-	<a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues">Report Bug</a>
+	<a href="https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/issues">Report Bug</a>
 	·
-	<a href="https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues">Request Feature</a>
+	<a href="https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/issues">Request Feature</a>
 </p>
 
 <!-- PROJECT SHIELDS -->
@@ -40,29 +40,34 @@ In this project we will create a simple streaming data pipeline to continuously 
 
 |     Service     | Badge | Badge | Badge | Badge | Badge |
 |-----------------|-------|-------|-------|-------|-------|
-|  **GitHub**     |[![GitHub last commit](https://img.shields.io/github/last-commit/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/commits/master)|[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/pulls)|[![GitHub issues](https://img.shields.io/github/issues/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues)|[![GitHub forks](https://img.shields.io/github/forks/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/network)|[![GitHub stars](https://img.shields.io/github/stars/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/stargazers)|
-|  **GitHub**     |![GitHub repo size](https://img.shields.io/github/repo-size/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|![GitHub top language](https://img.shields.io/github/languages/top/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.svg)|![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/AnanthaRajuC/Streaming_ETL_pipeline_MySQL.svg)|![GitHub language count](https://img.shields.io/github/languages/count/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)|
+|  **GitHub**     |[![GitHub last commit](https://img.shields.io/github/last-commit/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/commits/main)|[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/pulls)|[![GitHub issues](https://img.shields.io/github/issues/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/issues)|[![GitHub forks](https://img.shields.io/github/forks/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/network)|[![GitHub stars](https://img.shields.io/github/stars/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/stargazers)|
+|  **GitHub**     |![GitHub repo size](https://img.shields.io/github/repo-size/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)|![GitHub top language](https://img.shields.io/github/languages/top/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics.svg)|![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)|![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics.svg)|![GitHub language count](https://img.shields.io/github/languages/count/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)|
 
 ## Quick Start
 
-Requires Docker with the Compose v2 plugin. Everything, including MySQL and ClickHouse, runs in containers.
+Requires Docker with the Compose v2 plugin. Everything, including MySQL and ClickHouse, runs in containers. The event generator and dbt also need Python 3.10 or later.
 
 ~~~bash
-# 1. Start the whole pipeline. This creates the MySQL schema and sample data, registers the
-#    Debezium connector, creates the ksqlDB joins and the ClickHouse tables, and waits until it is all running.
+# 1. Start the whole pipeline. On first run this creates .env with generated passwords, then the
+#    MySQL schema and sample data, the Debezium connector, the ksqlDB joins and the ClickHouse tables.
 ./deploy.sh
 
-# 2. Generate a stream of new rows in MySQL (needs: pip install mysql-connector-python faker)
-cd data && python fake-events.py
+# 2. Generate a stream of inserts, updates and deletes in MySQL
+pip install -r requirements.txt
+python data/fake-events.py
 
 # 3. Watch them arrive on the live Grafana dashboard: http://localhost:3000
 #    or query ClickHouse directly, one current row per person
-docker exec -it clickhouse clickhouse-client --password root \
+docker exec -it clickhouse sh -c 'clickhouse-client --password "$CLICKHOUSE_PASSWORD"' \
   -q "SELECT CITY, count() FROM KafkaEngine.person_address_enriched FINAL GROUP BY CITY ORDER BY 2 DESC LIMIT 5"
 
 # 4. Tear everything down, including the data
 ./terminate.sh
 ~~~
+
+### Configuration
+
+All credentials live in `.env`, which is git-ignored. On first run, `./deploy.sh` copies [`.env.example`](.env.example) to `.env` and fills each empty `*_PASSWORD` with a random value. To choose your own, create `.env` from `.env.example` before deploying. Compose, MySQL, Debezium, ClickHouse, Grafana, dbt, the tests and the event generator all read it.
 
 Inserts, updates and deletes in MySQL all reach ClickHouse and the [Grafana dashboard](documentation/GRAFANA.MD) within seconds. Changing an address or its coordinates updates every person living there.
 
@@ -74,7 +79,7 @@ Inserts, updates and deletes in MySQL all reach ClickHouse and the [Grafana dash
 ./deploy.sh
 tests/smoke-test.sh          # changes the sample rows; ./terminate.sh && ./deploy.sh to reset
 tests/dashboard-check.sh     # every Grafana panel query returns data
-(cd rta && dbt build --profiles-dir .)
+(set -a; source .env; set +a; cd rta && dbt build --profiles-dir .)
 ./terminate.sh
 ~~~
 
@@ -82,8 +87,8 @@ tests/dashboard-check.sh     # every Grafana panel query returns data
 
 | Job                 | What it checks                                                                          |
 |---------------------|-----------------------------------------------------------------------------------------|
-| Lint                | `shellcheck` on the shell scripts, `docker compose config`, the Debezium config and Grafana dashboard are valid JSON, `fake-events.py` compiles |
-| End-to-end pipeline | `./deploy.sh`, then `tests/smoke-test.sh`, `tests/dashboard-check.sh` and `dbt build`; prints container logs if any step fails |
+| Lint                | `shellcheck` on the shell scripts, `docker compose config` (with a generated `.env`), the Debezium config and Grafana dashboard are valid JSON, `fake-events.py` compiles |
+| End-to-end pipeline | `./deploy.sh`, then `tests/smoke-test.sh`, a short run of `data/fake-events.py`, `tests/dashboard-check.sh` and `dbt build`; prints container logs if any step fails |
 
 ## Details
 
@@ -104,8 +109,8 @@ tests/dashboard-check.sh     # every Grafana panel query returns data
 
 This Project uses GitHub's integrated issue tracking system to record bugs and feature requests. If you want to raise an issue, please follow the recommendations below:
 
-* 	Before you log a bug, please [search the issue tracker](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/search?type=Issues) to see if someone has already reported the problem.
-* 	If the issue doesn't already exist, [create a new issue](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL/issues/new)
+* 	Before you log a bug, please [search the issue tracker](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/search?type=Issues) to see if someone has already reported the problem.
+* 	If the issue doesn't already exist, [create a new issue](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics/issues/new)
 * 	Please provide as much information as possible with the issue report.
 * 	If you need to paste code, or include a stack trace use Markdown +++```+++ escapes before and after your text.
 
@@ -120,7 +125,7 @@ Kindly refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for important **Pull Request
 
 2. Clone a copy of your fork on your local, replacing *YOUR-USERNAME* with your Github username.
 
-   `git clone https://github.com/YOUR-USERNAME/Streaming_ETL_pipeline_MySQL.git`
+   `git clone https://github.com/YOUR-USERNAME/Streaming-ETL-Pipeline-for-Realtime-Analytics.git`
 
 3. **Create a branch**: 
 
@@ -174,4 +179,4 @@ If you would like to enhance, please:
 
 Anantha Raju C - [@anantharajuc](https://twitter.com/anantharajuc) - arcswdev@gmail.com
 
-Project Link: [https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL](https://github.com/AnanthaRajuC/Streaming_ETL_pipeline_MySQL)
+Project Link: [https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics](https://github.com/AnanthaRajuC/Streaming-ETL-Pipeline-for-Realtime-Analytics)

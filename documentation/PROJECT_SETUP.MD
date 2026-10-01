@@ -32,7 +32,7 @@ The automated deployment sequence performs the following operations:
 
 | Component  | Set up by                                     | What it creates                                                        |
 |------------|-----------------------------------------------|------------------------------------------------------------------------|
-| MySQL      | `mysql/init/*.sql`, `data/*.sql`              | `streaming_etl_db` schema, `debezium` CDC user, sample data            |
+| MySQL      | `mysql/init/*`, `data/*.sql`                  | `streaming_etl_db` schema, `debezium` CDC user, sample data            |
 | Debezium   | `connector-init` service                      | The MySQL connector from `debeziumConfig.json`                         |
 | ksqlDB     | `ksqldb-init` service                         | Tables and joins from `ksqldb/pipeline.sql`                            |
 | ClickHouse | `clickhouse/init/00_database.sql`             | `KafkaEngine` database, Kafka engine table, materialized view, target table |
@@ -112,13 +112,13 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 | Service       | URL / Address            | Container        | Purpose                    |
 |---------------|--------------------------|------------------|----------------------------|
-| Grafana       | http://localhost:3000    | `grafana`        | Live dashboard (`admin` / `admin` to edit) |
+| Grafana       | http://localhost:3000    | `grafana`        | Live dashboard (Grafana admin login to edit) |
 | Debezium UI   | http://localhost:8080    | `debezium-ui`    | Connector management       |
 | Kafka UI      | http://localhost:9099    | `kafka-ui`       | Topic monitoring           |
 | Connect API   | http://localhost:8083    | `debezium`       | Debezium connector REST API|
 | ksqlDB Server | http://localhost:8088    | `ksqldb-server`  | Stream processing API      |
-| ClickHouse    | http://localhost:8123    | `clickhouse`     | Analytics database (`default` / `root`) |
-| MySQL         | localhost:3306           | `mysql`          | Source database (`admin` / `password`)  |
+| ClickHouse    | http://localhost:8123    | `clickhouse`     | Analytics database                      |
+| MySQL         | localhost:3306           | `mysql`          | Source database                         |
 
 --- 
 
@@ -175,7 +175,8 @@ The deployment creates a custom bridge network named `streaming_etl_webproxy` th
 
 Key environment variables for service configuration:
 
-- **MySQL**: `database.env` (`MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`), `MYSQL_DATABASE`
+- **Credentials**: `.env`, created from `.env.example` by `./deploy.sh` with generated passwords; see the README's Configuration section
+- **MySQL**: `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `DEBEZIUM_DB_PASSWORD`, `MYSQL_DATABASE`
 - **Kafka**: `KAFKA_PROCESS_ROLES`, `KAFKA_CONTROLLER_QUORUM_VOTERS`, `KAFKA_LISTENERS`, `KAFKA_ADVERTISED_LISTENERS`
 - **Debezium**: `BOOTSTRAP_SERVERS`, `CONFIG_STORAGE_TOPIC`, `OFFSET_STORAGE_TOPIC`, `STATUS_STORAGE_TOPIC`
 - **ksqlDB**: `KSQL_BOOTSTRAP_SERVERS`, `KSQL_LISTENERS`

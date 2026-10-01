@@ -13,8 +13,10 @@ The Debezium MySQL connector configuration consists of several key parameter cat
 | `database.hostname`    | mysql          | MySQL service name on the Compose network     |
 | `database.port`        | 3306           | MySQL server port                             |
 | `database.user`        | debezium       | Database user with replication privileges     |
-| `database.password`    | Debezium@123#  | Database user password                        |
+| `database.password`    | `${env:DEBEZIUM_DB_PASSWORD}` | Resolved by Kafka Connect from its environment, so the file holds no password |
 | `database.server.id`   | 223344         | Replica ID Debezium uses; must differ from MySQL's `server-id` (1) |
+
+The `debezium` service enables Kafka Connect's `EnvVarConfigProvider` (`CONNECT_CONFIG_PROVIDERS=env`) and receives `DEBEZIUM_DB_PASSWORD` from `.env`, so `${env:DEBEZIUM_DB_PASSWORD}` is replaced with the real password when the connector starts. The REST API and Debezium UI only ever show the placeholder.
 
 **Data Capture Parameters**
 
@@ -61,7 +63,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.hostname": "mysql",
     "database.port": "3306",
     "database.user": "debezium",
-    "database.password": "Debezium@123#",
+    "database.password": "${env:DEBEZIUM_DB_PASSWORD}",
     "database.server.id": "223344",
     "database.include.list": "streaming_etl_db",
     "database.allowPublicKeyRetrieval": "true",
@@ -110,7 +112,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
         "topic.prefix": "dbserver",
         "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
         "database.hostname": "mysql",
-        "database.password": "Debezium@123#",
+        "database.password": "${env:DEBEZIUM_DB_PASSWORD}",
         "value.converter.schemas.enable": "false",
         "name": "streaming_ETL_pipeline_MySQL-connector",
         "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",

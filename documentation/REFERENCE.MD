@@ -58,7 +58,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.hostname": "mysql",
     "database.port": "3306",
     "database.user": "debezium",
-    "database.password": "Debezium@123#",
+    "database.password": "${env:DEBEZIUM_DB_PASSWORD}",
     "database.server.id": "223344",
     "database.include.list": "streaming_etl_db",
     "database.allowPublicKeyRetrieval": "true",

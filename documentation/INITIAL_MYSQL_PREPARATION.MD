@@ -9,7 +9,7 @@ This section covers the setup and configuration of the MySQL source database tha
 </details>
 
 > **Automated in Docker Compose.** The `mysql` service runs everything on this page on its first start:
-> `mysql/init/00_schema.sql` creates the tables, `mysql/init/01_debezium_user.sql` creates the CDC user,
+> `mysql/init/00_schema.sql` creates the tables, `mysql/init/01_debezium_user.sh` creates the CDC user with the password `DEBEZIUM_DB_PASSWORD` from `.env`,
 > and the three `data/*.sql` files load the sample rows. Binary logging (`--log-bin`, `--binlog-format=ROW`)
 > is set on the container's command line. The SQL below is kept for reference and for running against
 > your own MySQL server. `./terminate.sh` deletes the data, so the next `./deploy.sh` starts from these scripts again.
@@ -40,7 +40,7 @@ The pipeline requires a dedicated MySQL user with specific privileges to enable 
 
 ~~~sql
 -- Create user 
-CREATE USER 'debezium'@'%' IDENTIFIED WITH mysql_native_password BY 'Debezium@123#';
+CREATE USER 'debezium'@'%' IDENTIFIED WITH mysql_native_password BY '<DEBEZIUM_DB_PASSWORD>';
 
 -- Grant privileges to user
 GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium'@'%';
@@ -148,7 +148,22 @@ For continuous testing and demonstration purposes, the system includes a Python-
 
 **Event Generator Location**: `/data/fake-events.py`
 
-This script generates ongoing database changes to simulate real-world operational data modifications, enabling demonstration of the streaming ETL pipeline's change data capture capabilities.
+This script generates ongoing database changes to simulate real-world operational data modifications. Each event is picked at random, with a random delay before the next:
+
+| Event | Share | What it does |
+|-------|-------|--------------|
+| Insert | 60% | A new person with a new `geo` row and address |
+| Update person | 20% | Changes a random person's age |
+| Change address | 10% | Moves a random address to another city |
+| Delete person | 10% | Deletes a random person |
+
+~~~bash
+pip install -r requirements.txt
+python data/fake-events.py                                       # 100 events, 2-5 s apart
+python data/fake-events.py --events 20 --min-delay 0.5 --max-delay 1
+~~~
+
+It reads `MYSQL_USER` and `MYSQL_PASSWORD` from `.env`.
 
 ## Data Verification and Testing
 
@@ -183,7 +198,7 @@ The prepared database connects to the Debezium MySQL connector through specific 
 | `database.hostname`     | mysql             | MySQL service on the Compose network |
 | `database.port`         | 3306              | MySQL port                      |
 | `database.user`         | debezium          | User created in preparation     |
-| `database.password`     | Debezium@123#     | User password                   |
+| `database.password`     | `${env:DEBEZIUM_DB_PASSWORD}` | Read from the Connect worker's environment |
 | `database.include.list` | streaming_etl_db  | Target schema                   |
 | `topic.prefix`          | dbserver          | Kafka topic prefix              |
 

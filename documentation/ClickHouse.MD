@@ -6,12 +6,12 @@ This document describes ClickHouse, the analytics database at the end of the str
 
 ## Setup
 
-ClickHouse runs as the `clickhouse` service in `docker-compose.yaml` (HTTP on `localhost:8123`, native protocol on `localhost:9000`, user `default`, password `root`). On first start, [`clickhouse/init/00_database.sql`](../clickhouse/init/00_database.sql) creates the `KafkaEngine` database and the three objects below, so no manual steps are needed.
+ClickHouse runs as the `clickhouse` service in `docker-compose.yaml` (HTTP on `localhost:8123`, native protocol on `localhost:9000`; user and password are `CLICKHOUSE_USER` and `CLICKHOUSE_PASSWORD` in `.env`). On first start, [`clickhouse/init/00_database.sql`](../clickhouse/init/00_database.sql) creates the `KafkaEngine` database and the three objects below, so no manual steps are needed.
 
 Open a client with:
 
 ~~~shell
-docker exec -it clickhouse clickhouse-client --password root
+docker exec -it clickhouse sh -c 'clickhouse-client --password "$CLICKHOUSE_PASSWORD"'
 ~~~
 
 ~~~sql
@@ -135,10 +135,10 @@ The dbt model `person_current` wraps the `FINAL` query in a view; see [dbt](DBT.
 
 ## Trying It Out
 
-Run `python data/fake-events.py` (from the `data` folder) or change rows by hand, and watch the results update within a few seconds:
+Run `python data/fake-events.py` (it mixes inserts, updates, address changes and deletes) or change rows by hand, and watch the results update within a few seconds:
 
 ~~~shell
-docker exec -i mysql mysql -uadmin -ppassword streaming_etl_db -e "
+docker exec -i mysql sh -c 'MYSQL_PWD="$MYSQL_PASSWORD" mysql -u"$MYSQL_USER" streaming_etl_db' -e "
   UPDATE person  SET first_name = 'Renamed' WHERE id = 1;
   UPDATE address SET city = 'NewCity'       WHERE id = 2;
   DELETE FROM person                        WHERE id = 5;"

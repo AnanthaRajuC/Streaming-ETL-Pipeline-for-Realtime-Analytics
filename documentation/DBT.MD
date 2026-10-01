@@ -20,10 +20,11 @@ The models live in `rta/models/KafkaEngine/`:
 
 `schema.yml` declares the source and adds tests that `dbt build` runs after the models: `P_ID` is unique and not null in `person_current`, each city appears once in the top-5 models, and a missing `CITY` raises a warning.
 
-Run dbt from the `rta` folder against the ClickHouse container:
+Run dbt from the `rta` folder against the ClickHouse container. `rta/profiles.yml` reads the ClickHouse login from the `CLICKHOUSE_USER` and `CLICKHOUSE_PASSWORD` environment variables, so load `.env` first:
 
 ~~~bash
-pip install dbt-clickhouse
+pip install -r rta/requirements.txt
+set -a; source .env; set +a
 cd rta
 dbt build --profiles-dir .
 ~~~
