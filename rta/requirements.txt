@@ -1,0 +1,3 @@
+# dbt project (run from rta/: dbt build --profiles-dir .)
+dbt-core==1.12.5
+dbt-clickhouse==1.10.3

@@ -1,4 +1,5 @@
 # ClickHouse datasource for the provisioned dashboard (grafana/dashboards).
+# Grafana fills in $CLICKHOUSE_USER and $CLICKHOUSE_PASSWORD from its environment.
 apiVersion: 1
 
 datasources:
@@ -11,7 +12,7 @@ datasources:
       host: clickhouse
       port: 9000
       protocol: native
-      username: default
+      username: $CLICKHOUSE_USER
       defaultDatabase: KafkaEngine
     secureJsonData:
-      password: root
+      password: $CLICKHOUSE_PASSWORD

@@ -4,6 +4,13 @@ cd "$(dirname "$0")"
 
 echo "Streaming ETL"
 
+# Create .env with generated passwords on first run, then load it.
+scripts/init-env.sh
+set -a
+# shellcheck source=/dev/null
+source .env
+set +a
+
 # Start every service and block until the ones with healthchecks are
 # healthy and the one-off init services have finished:
 #   connector-init  registers the Debezium connector (debeziumConfig.json)
@@ -22,7 +29,7 @@ if ! docker compose wait ksqldb-init | grep -q "status code 0$"; then
 fi
 
 # Grafana downloads its ClickHouse plugin from grafana.com on first start.
-grafana_status="Grafana      http://localhost:3000  (dashboard: Streaming ETL; admin login: admin / admin)"
+grafana_status="Grafana      http://localhost:3000  (dashboard: Streaming ETL; admin user: $GRAFANA_ADMIN_USER)"
 if ! docker compose up -d --wait grafana; then
   grafana_status="Grafana      NOT RUNNING: it could not start; see: docker compose logs grafana
                (it needs internet access to grafana.com to install its ClickHouse plugin)"
@@ -40,12 +47,14 @@ The pipeline is running: MySQL -> Debezium -> Kafka -> ksqlDB -> ClickHouse.
   Debezium UI  http://localhost:8080
   Connect API  http://localhost:8083
   ksqlDB       http://localhost:8088
-  ClickHouse   http://localhost:8123  (user: default, password: root)
-  MySQL        localhost:3306          (user: admin, password: password)
+  ClickHouse   http://localhost:8123  (user: $CLICKHOUSE_USER)
+  MySQL        localhost:3306          (user: $MYSQL_USER)
+
+Passwords are in .env.
 
 Try it:
-  Generate events:  python data/fake-events.py
-  Query ClickHouse: docker exec -it clickhouse clickhouse-client --password root \\
+  Generate events:  pip install -r requirements.txt && python data/fake-events.py
+  Query ClickHouse: docker exec -it clickhouse sh -c 'clickhouse-client --password "\$CLICKHOUSE_PASSWORD"' \\
                       -q "SELECT CITY, count() FROM KafkaEngine.person_address_enriched FINAL WHERE IS_DELETED = 0 GROUP BY CITY ORDER BY 2 DESC LIMIT 5"
   ksqlDB CLI:       docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 MSG

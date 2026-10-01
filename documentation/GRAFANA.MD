@@ -2,7 +2,7 @@
 
 Grafana shows the pipeline's output live: it queries ClickHouse every 5 seconds, so inserts, updates and deletes made in MySQL appear on the dashboard within seconds.
 
-Open **http://localhost:3000** after `./deploy.sh`. The dashboard **Streaming ETL: Real-time Analytics** is the home page and can be viewed without logging in. To edit it, log in as `admin` / `admin`.
+Open **http://localhost:3000** after `./deploy.sh`. The dashboard **Streaming ETL: Real-time Analytics** is the home page and can be viewed without logging in. To edit it, log in with `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` from `.env`.
 
 ## Setup
 
@@ -10,7 +10,7 @@ Grafana runs as the `grafana` service in `docker-compose.yaml` (`grafana/grafana
 
 | File | What it sets up |
 |------|-----------------|
-| `grafana/provisioning/datasources/clickhouse.yaml` | The `ClickHouse` datasource (uid `clickhouse`): native protocol to `clickhouse:9000`, database `KafkaEngine` |
+| `grafana/provisioning/datasources/clickhouse.yaml` | The `ClickHouse` datasource (uid `clickhouse`): native protocol to `clickhouse:9000`, database `KafkaEngine`, login from `CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD` |
 | `grafana/provisioning/dashboards/dashboards.yaml` | Loads every JSON file in `grafana/dashboards/` |
 | `grafana/dashboards/streaming-etl.json` | The dashboard itself |
 
@@ -33,7 +33,7 @@ Every panel reads current people only: `KafkaEngine.person_address_enriched FINA
 | Where people live | Geomap | One marker per person, from the `geo` coordinates of their address |
 | Recently changed people | Table | The 20 most recently created or updated people |
 
-The seed data is created when the pipeline starts, so it shows up as one tall bar in **New people per interval**. Run `python data/fake-events.py` from the `data` folder to see new bars arrive.
+The seed data is created when the pipeline starts, so it shows up as one tall bar in **New people per interval**. Run `python data/fake-events.py` to see new bars arrive and existing people change.
 
 Every panel shows a single series in one colour (`#3987e5`), checked for contrast and lightness against Grafana's dark panel background. Each panel's data is also available as a table through **Inspect → Data**.
 
@@ -41,7 +41,7 @@ Every panel shows a single series in one colour (`#3987e5`), checked for contras
 
 The dashboard is provisioned read-only. To change it:
 
-1. Log in as `admin`, open the dashboard, and use **Save as** to make an editable copy.
+1. Log in as the Grafana admin, open the dashboard, and use **Save as** to make an editable copy.
 2. Edit the copy, then use **Export → Export as JSON**.
 3. Replace `grafana/dashboards/streaming-etl.json` with the export, keeping `"uid": "streaming-etl"` and the title.
 4. Restart Grafana with `docker compose restart grafana`, and run `tests/dashboard-check.sh` (it is also run in CI).

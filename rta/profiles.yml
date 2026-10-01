@@ -6,6 +6,6 @@ rta:
       schema: KafkaEngine
       host: localhost
       port: 8123
-      user: default
-      password: root
+      user: "{{ env_var('CLICKHOUSE_USER') }}"
+      password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
       secure: False

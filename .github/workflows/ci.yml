@@ -19,13 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Shell scripts (shellcheck)
-        run: shellcheck deploy.sh terminate.sh debezium/register-connector.sh ksqldb/run-pipeline.sh tests/smoke-test.sh tests/dashboard-check.sh
+        run: shellcheck deploy.sh terminate.sh scripts/init-env.sh mysql/init/01_debezium_user.sh debezium/register-connector.sh ksqldb/run-pipeline.sh tests/smoke-test.sh tests/dashboard-check.sh
 
       - name: Docker Compose file
-        run: docker compose config --quiet
+        run: |
+          scripts/init-env.sh
+          docker compose config --quiet
 
       - name: JSON files are valid
         run: jq empty debeziumConfig.json grafana/dashboards/*.json
@@ -39,14 +41,21 @@ jobs:
     timeout-minutes: 30
     needs: lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            rta/requirements.txt
 
-      - name: Install dbt
-        run: pip install "dbt-core==1.10.*" "dbt-clickhouse==1.10.*"
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -r rta/requirements.txt
+
+      - name: Create .env with generated passwords
+        run: scripts/init-env.sh
 
       - name: Pull images
         run: docker compose pull --quiet
@@ -57,12 +66,17 @@ jobs:
       - name: Smoke test (MySQL -> ClickHouse)
         run: tests/smoke-test.sh
 
+      - name: Event generator (inserts, updates, address changes, deletes)
+        run: python data/fake-events.py --events 15 --min-delay 0.2 --max-delay 0.5
+
       - name: Grafana dashboard (every panel query)
         run: tests/dashboard-check.sh
 
       - name: dbt build
         working-directory: rta
-        run: dbt build --profiles-dir .
+        run: |
+          set -a; source ../.env; set +a
+          dbt build --profiles-dir .
 
       - name: Container logs
         if: failure()
