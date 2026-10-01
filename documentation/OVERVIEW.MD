@@ -18,6 +18,7 @@ The system consists of several key components working together to provide real-t
 | Schema Management     | Confluent Schema Registry  | Avro/JSON schema management for Kafka                  | Port `8081`                                |
 | Stream Processing     | ksqlDB                     | Real-time stream processing and enrichment             | Port `8088`                                |
 | Analytics Database    | ClickHouse                 | Columnar OLAP database for analytical queries          | Ports `8123`, `9000`                       |
+| Dashboard             | Grafana                    | Live dashboard over ClickHouse                         | Port `3000`                                |
 | Data Transformation   | dbt (Optional)             | SQL-based data modeling and transformation             | Post-processing layer                      |
 
 ## Deployment Architecture

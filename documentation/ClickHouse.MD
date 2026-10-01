@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS KafkaEngine.person_address_enriched (
   ZIPCODE Nullable(String),
   LAT Nullable(Float64),
   LNG Nullable(Float64),
+  CREATED_AT Nullable(DateTime64(3)),
   UPDATED_AT Nullable(DateTime64(3)),
   IS_DELETED UInt8,
   VERSION UInt64
@@ -75,6 +76,7 @@ CREATE TABLE IF NOT EXISTS KafkaEngine.person_address_enriched_queue (
   ZIPCODE Nullable(String),
   LAT Nullable(Float64),
   LNG Nullable(Float64),
+  CREATED_AT Nullable(Int64),
   UPDATED_AT Nullable(Int64),
   IS_DELETED UInt8
 )
@@ -97,6 +99,7 @@ SELECT
   P_ID, FIRST_NAME, LAST_NAME, GENDER, AGE,
   fromUnixTimestamp64Milli(REGISTRATION) AS REGISTRATION,
   A_ID, CITY, STATE, ZIPCODE, LAT, LNG,
+  fromUnixTimestamp64Milli(CREATED_AT) AS CREATED_AT,
   fromUnixTimestamp64Milli(UPDATED_AT) AS UPDATED_AT,
   IS_DELETED,
   _offset AS VERSION

@@ -1,0 +1,17 @@
+# ClickHouse datasource for the provisioned dashboard (grafana/dashboards).
+apiVersion: 1
+
+datasources:
+  - name: ClickHouse
+    uid: clickhouse
+    type: grafana-clickhouse-datasource
+    isDefault: true
+    editable: false
+    jsonData:
+      host: clickhouse
+      port: 9000
+      protocol: native
+      username: default
+      defaultDatabase: KafkaEngine
+    secureJsonData:
+      password: root

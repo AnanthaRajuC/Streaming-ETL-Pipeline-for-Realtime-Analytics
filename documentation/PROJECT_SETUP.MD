@@ -4,7 +4,7 @@ This document covers the deployment of the containerized streaming ETL pipeline 
 
 ## Deployment Architecture
 
-The whole pipeline (MySQL, Kafka, Debezium, Schema Registry, ksqlDB, ClickHouse and both web UIs) is defined in `docker-compose.yaml`. Every image is pinned to a tested version, Kafka runs in KRaft mode (no ZooKeeper), and the services with healthchecks (MySQL, Kafka, Debezium Connect, ksqlDB, ClickHouse) gate the services that depend on them.
+The whole pipeline (MySQL, Kafka, Debezium, Schema Registry, ksqlDB, ClickHouse, Grafana and the Kafka and Debezium web UIs) is defined in `docker-compose.yaml`. Every image is pinned to a tested version, Kafka runs in KRaft mode (no ZooKeeper), and the services with healthchecks (MySQL, Kafka, Debezium Connect, ksqlDB, ClickHouse) gate the services that depend on them.
 
 ## Automated Deployment
 
@@ -22,10 +22,11 @@ The automated deployment sequence performs the following operations:
 
 | Step | Command                               | Purpose                                                   |
 |------|---------------------------------------|-----------------------------------------------------------|
-| 1    | `docker compose up -d --wait`         | Start all services and wait until they report healthy     |
+| 1    | `docker compose up -d --wait <services>` | Start every service except Grafana and wait until they report healthy |
 | 2    | `docker compose wait ksqldb-init`     | Wait for the pipeline setup to finish; stop if it failed  |
-| 3    | `docker compose ps -a`                | Display containers                                        |
-| 4    | -                                     | Print the service URLs and commands to try the pipeline   |
+| 3    | `docker compose up -d --wait grafana` | Start Grafana; if it fails, print a warning and carry on  |
+| 4    | `docker compose ps -a`                | Display containers                                        |
+| 5    | -                                     | Print the service URLs and commands to try the pipeline   |
 
 `./deploy.sh` leaves the whole pipeline running, with no manual steps:
 
@@ -35,6 +36,7 @@ The automated deployment sequence performs the following operations:
 | Debezium   | `connector-init` service                      | The MySQL connector from `debeziumConfig.json`                         |
 | ksqlDB     | `ksqldb-init` service                         | Tables and joins from `ksqldb/pipeline.sql`                            |
 | ClickHouse | `clickhouse/init/00_database.sql`             | `KafkaEngine` database, Kafka engine table, materialized view, target table |
+| Grafana    | `grafana/provisioning`, `grafana/dashboards`  | ClickHouse datasource and the live dashboard; see [Grafana](GRAFANA.MD) |
 
 `connector-init` and `ksqldb-init` exit once they are done, so they show as `Exited (0)`.
 
@@ -110,6 +112,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 | Service       | URL / Address            | Container        | Purpose                    |
 |---------------|--------------------------|------------------|----------------------------|
+| Grafana       | http://localhost:3000    | `grafana`        | Live dashboard (`admin` / `admin` to edit) |
 | Debezium UI   | http://localhost:8080    | `debezium-ui`    | Connector management       |
 | Kafka UI      | http://localhost:9099    | `kafka-ui`       | Topic monitoring           |
 | Connect API   | http://localhost:8083    | `debezium`       | Debezium connector REST API|
@@ -166,6 +169,7 @@ The deployment creates a custom bridge network named `streaming_etl_webproxy` th
 | clickhouse      | 8123 / 9000   | 8123 / 9000   | HTTP / native    |
 | debezium-ui     | 8080          | 8080          | HTTP             |
 | kafka-ui        | 8080          | 9099          | HTTP             |
+| grafana         | 3000          | 3000          | HTTP             |
 
 ## Environment Variable Configuration
 
