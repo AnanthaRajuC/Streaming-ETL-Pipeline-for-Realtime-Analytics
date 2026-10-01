@@ -8,9 +8,17 @@ dbt operates as an additional analytics layer on top of the existing streaming E
 
 ## Models and Tests
 
-The models in `rta/models/KafkaEngine/` read from the `KafkaEngine.person_address_enriched` MergeTree table through `{{ source('KafkaEngine', 'person_address_enriched') }}`. They never read the `person_address_enriched_queue` Kafka engine table: a `SELECT` on a Kafka engine table consumes the messages, so the materialized view would miss them (ClickHouse blocks such queries by default).
+The models live in `rta/models/KafkaEngine/`:
 
-`schema.yml` declares the source and adds `not_null` and `unique` tests, which `dbt build` runs after the models.
+| Model            | Materialization | Contents                                                                 |
+|------------------|-----------------|--------------------------------------------------------------------------|
+| `person_current` | view            | One row per person that still exists: `person_address_enriched FINAL WHERE IS_DELETED = 0` |
+| `rta_initial`    | view            | Top 5 cities by number of people, from `person_current`                  |
+| `rta_initial_2`  | table           | The same, materialized as a MergeTree table                              |
+
+`person_current` reads the `KafkaEngine.person_address_enriched` ReplacingMergeTree table through `{{ source('KafkaEngine', 'person_address_enriched') }}` and collapses its versions with `FINAL` (see [ClickHouse](ClickHouse.MD)). No model reads the `person_address_enriched_queue` Kafka engine table: a `SELECT` on a Kafka engine table consumes the messages, so the materialized view would miss them (ClickHouse blocks such queries by default). People without an address are counted under the city `Unknown`.
+
+`schema.yml` declares the source and adds tests that `dbt build` runs after the models: `P_ID` is unique and not null in `person_current`, each city appears once in the top-5 models, and a missing `CITY` raises a warning.
 
 Run dbt from the `rta` folder against the ClickHouse container:
 

@@ -127,6 +127,38 @@ services:
       timeout: 5s
       retries: 60
 
+  # One-off: registers the Debezium connector from debeziumConfig.json.
+  connector-init:
+    image: curlimages/curl:8.10.1
+    container_name: connector-init
+    depends_on:
+      debezium:
+        condition: service_healthy
+    volumes:
+      - ./debeziumConfig.json:/config/debeziumConfig.json:ro
+      - ./debezium/register-connector.sh:/register-connector.sh:ro
+    entrypoint: ["/bin/sh", "/register-connector.sh"]
+    networks:
+      - webproxy
+    restart: "no"
+
+  # One-off: creates the ksqlDB tables and joins from ksqldb/pipeline.sql
+  # and fails if the final join query is not running.
+  ksqldb-init:
+    image: confluentinc/ksqldb-cli:0.29.0
+    container_name: ksqldb-init
+    depends_on:
+      ksqldb-server:
+        condition: service_healthy
+      connector-init:
+        condition: service_completed_successfully
+    volumes:
+      - ./ksqldb:/ksqldb:ro
+    entrypoint: ["/bin/sh", "/ksqldb/run-pipeline.sh"]
+    networks:
+      - webproxy
+    restart: "no"
+
   ksqldb-cli:
     image: confluentinc/ksqldb-cli:0.29.0
     container_name: ksqldb-cli
@@ -139,6 +171,9 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.8
     container_name: clickhouse
+    depends_on:
+      kafka:
+        condition: service_healthy
     environment:
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: root

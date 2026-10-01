@@ -32,7 +32,20 @@ The Debezium MySQL connector configuration consists of several key parameter cat
 | `key.converter.schemas.enable` | false                                      | Disable schema in key messages         |
 | `value.converter.schemas.enable` | false                                    | Disable schema in value messages       |
 
+**Transforms**
+
+| Parameter                                         | Value                    | Purpose                                                        |
+|---------------------------------------------------|--------------------------|----------------------------------------------------------------|
+| `transforms.unwrap.type`                          | `ExtractNewRecordState`  | Keep only the row's new state instead of the full change event |
+| `transforms.unwrap.delete.tombstone.handling.mode`| `rewrite`                | Send deletes as normal messages with `__deleted = "true"`      |
+| `transforms.key.type`                             | `ExtractField$Key`       | Use the bare `id` value as the message key                     |
+| `transforms.key.field`                            | `id`                     | Primary key column of every table                              |
+
+These make each topic a changelog keyed by primary key, which ksqlDB reads as a table. See [ksqlDB](KSQLDB_STREAMS.MD).
+
 #### Debezium Registration
+
+`deploy.sh` registers the connector automatically: the one-off `connector-init` service posts `debeziumConfig.json` once Debezium Connect is healthy (see `debezium/register-connector.sh`), and treats an existing connector as success. To register it by hand, for example after changing the config and deleting the connector:
 
 ~~~shell
 curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 127.0.0.1:8083/connectors/ -d @debeziumConfig.json
@@ -57,8 +70,11 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "schema.history.internal.kafka.topic": "schema-changes.streaming_etl_db",
     "include.schema.changes": "false",
     "time.precision.mode": "connect",
-    "transforms": "unwrap",
+    "transforms": "unwrap,key",
     "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.delete.tombstone.handling.mode": "rewrite",
+    "transforms.key.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.key.field": "id",
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable": "false",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
@@ -86,7 +102,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
         "database.user": "debezium",
         "database.server.id": "223344",
         "time.precision.mode": "connect",
-        "transforms": "unwrap",
+        "transforms": "unwrap,key",
         "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
         "database.port": "3306",
         "include.schema.changes": "false",

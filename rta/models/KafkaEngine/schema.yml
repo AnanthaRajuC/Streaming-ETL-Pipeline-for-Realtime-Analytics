@@ -5,13 +5,29 @@ sources:
     schema: KafkaEngine
     tables:
       - name: person_address_enriched
-        description: MergeTree table filled from the person_address_enriched Kafka topic by person_address_enriched_queue_mv.
+        description: >
+          ReplacingMergeTree table filled from the person_address_enriched Kafka topic by
+          person_address_enriched_queue_mv. Holds several versions per person until merged.
         columns:
           - name: P_ID
             tests:
               - not_null
 
 models:
+  - name: person_current
+    description: One row per person that still exists in MySQL, with their current address and coordinates.
+    columns:
+      - name: P_ID
+        tests:
+          - unique
+          - not_null
+      - name: CITY
+        description: Null when the person has no address in MySQL.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
   - name: rta_initial
     description: Top 5 cities by number of enriched person events (view).
     columns:

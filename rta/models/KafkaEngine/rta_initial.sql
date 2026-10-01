@@ -1,13 +1,13 @@
 {{ config(materialized='view') }}
 
--- Reads the MergeTree table populated by the materialized view, never the
--- Kafka engine table: selecting from that would consume messages the
--- materialized view needs.
+-- Reads person_current (one row per live person), never the Kafka engine
+-- table: selecting from that would consume messages the materialized
+-- view needs.
 with transformed as (
     select
-    CITY,
+    ifNull(CITY, 'Unknown') as CITY,
     COUNT(*) as occurrences
-    from {{ source('KafkaEngine', 'person_address_enriched') }}
+    from {{ ref('person_current') }}
     GROUP BY CITY
     ORDER BY occurrences DESC
     LIMIT 5

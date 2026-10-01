@@ -23,10 +23,20 @@ The automated deployment sequence performs the following operations:
 | Step | Command                               | Purpose                                                   |
 |------|---------------------------------------|-----------------------------------------------------------|
 | 1    | `docker compose up -d --wait`         | Start all services and wait until they report healthy     |
-| 2    | `docker compose ps`                   | Display running containers                                |
-| 3    | -                                     | Print the service URLs and the next commands to run       |
+| 2    | `docker compose wait ksqldb-init`     | Wait for the pipeline setup to finish; stop if it failed  |
+| 3    | `docker compose ps -a`                | Display containers                                        |
+| 4    | -                                     | Print the service URLs and commands to try the pipeline   |
 
-On the first start, MySQL creates the `streaming_etl_db` schema, the `debezium` CDC user and the sample data, and ClickHouse creates the `KafkaEngine` database. See [Initial MySQL Preparation](INITIAL_MYSQL_PREPARATION.MD).
+`./deploy.sh` leaves the whole pipeline running, with no manual steps:
+
+| Component  | Set up by                                     | What it creates                                                        |
+|------------|-----------------------------------------------|------------------------------------------------------------------------|
+| MySQL      | `mysql/init/*.sql`, `data/*.sql`              | `streaming_etl_db` schema, `debezium` CDC user, sample data            |
+| Debezium   | `connector-init` service                      | The MySQL connector from `debeziumConfig.json`                         |
+| ksqlDB     | `ksqldb-init` service                         | Tables and joins from `ksqldb/pipeline.sql`                            |
+| ClickHouse | `clickhouse/init/00_database.sql`             | `KafkaEngine` database, Kafka engine table, materialized view, target table |
+
+`connector-init` and `ksqldb-init` exit once they are done, so they show as `Exited (0)`.
 
 --- 
 
@@ -113,7 +123,7 @@ docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 
 **Automated Teardown**
 
-Use the `terminate.sh` script to stop and remove every container and the network:
+Use the `terminate.sh` script to stop and remove every container, the network and the containers' data volumes, so the next `./deploy.sh` starts from a clean slate:
 
 ~~~bash
 ./terminate.sh
@@ -124,14 +134,10 @@ Use the `terminate.sh` script to stop and remove every container and the network
 **Manual Teardown Process**
 
 ~~~shell
-docker compose -f docker-compose.yaml down
-~~~
-
-Add `-v` to also delete the MySQL and ClickHouse data, so their init scripts run again on the next start:
-
-~~~shell
 docker compose -f docker-compose.yaml down -v
 ~~~
+
+Without `-v`, the old MySQL and ClickHouse data volumes are left behind unused.
 
 **State Preservation Option**
 

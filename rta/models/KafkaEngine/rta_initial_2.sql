@@ -2,9 +2,9 @@
 
 with abc as
 (select
-    CITY,
+    ifNull(CITY, 'Unknown') as CITY,
     COUNT(*) as occurrences
-    from {{ source('KafkaEngine', 'person_address_enriched') }}
+    from {{ ref('person_current') }}
     GROUP BY CITY
     ORDER BY occurrences DESC
     LIMIT 5
